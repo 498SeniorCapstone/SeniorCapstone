@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: https://github.com/kjdove/SeniorCapstone
+      url: https://kjdove.github.io/SeniorCapstone/
 
     steps:
       - name: Deploy to GitHub Pages
