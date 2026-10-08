@@ -19,27 +19,28 @@ function App() {
 
     <>
     <header className="site-header">
-      <a className="profile-link" href="#">Profile</a>
-      <a className="site-name" href="#">Website Name</a>
+      <a className="site-name">Website Name</a>
       <div className="header-actions">
         <button aria-label="Notifications">Notifications</button>
         <button aria-label="Settings">Settings</button>
+        <button aria-label="Profile">Profile</button>
       </div>
     </header>
 
     <nav className="site-nav" aria-label="Main navigation">
-      <a href="#stats">Stats</a>
-      <a href="#calendar">Calendar</a>
-      <a href="#discover">Discover</a>
-      <a href="#my-recipes">My Recipes</a>
-      <a href="#learn">Learn</a>
-      <a href="#shopping-list">Shopping List</a>
+      {/*add clickability to the following tabs*/}
+      <button aria-label="stats">Stats</button>
+      <button aria-label="calendar">Calendar</button>
+      <button aria-label="discover">Discover</button>
+      <button aria-label="my-recipes">My Recipes</button>
+      <button aria-label="learn">Learn</button>
+      <button aria-label="shopping-list">Shopping List</button>
     </nav>
 
     <main>
       <form className="recipe-search" role="search">
         <label htmlFor="recipe-query">Search Recipes</label>
-        <input id="recipe-query" name="search" type="search" placeholder="Search recipes..." />
+        <input id="recipe-query" name="search" type="search" />
         <button type="submit">Search</button>
         {/* add functionality here to generate recipe from database */}
       </form>
