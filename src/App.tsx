@@ -41,30 +41,34 @@ function App() {
         <label htmlFor="recipe-query">Search Recipes</label>
         <input id="recipe-query" name="search" type="search" placeholder="Search recipes..." />
         <button type="submit">Search</button>
-        //add functionality here to generate recipe from database
+        {/* add functionality here to generate recipe from database */}
       </form>
       <div className="user-stats">
-        <section id="stats" className="panel">
+        <section id="stats" className="panel widget">
           <h2>User Stats</h2>
-          //add user stats functionality here
+          {/* add functionality and return from individual files/functions */}
         </section>
 
-        <section id="calendar" className="panel">
+        <section id="calendar" className="panel widget">
           <h2>Calendar</h2>
+          {/* add functionality here to generate recipe from database */}
         </section>
 
-        <section id="my-recipes" className="panel">
+        <section id="my-recipes" className="panel widget">
           <h2>My Recipes</h2>
+          {/* add functionality here to generate recipe from database */}
         </section>
 
-        <section id="learn" className="panel">
+        <section id="learn" className="panel widget">
           <h2>Learn</h2>
+          {/* add functionality here to generate recipe from database */}
         </section>
       </div>
 
-        <section id="discover" className="panel discover-panel">
+        <section id="discover" className="panel widget discover-panel">
           <h2>Discover</h2>
           <div className="recipe-list">
+            {/* add functionality here to generate recipe from database */}
           </div>
         </section>
     </main>

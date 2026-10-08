@@ -188,3 +188,11 @@
   border: 1px solid #ccc;
   border-radius: 8px;
 }
+
+
+.widget{
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
