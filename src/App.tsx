@@ -36,6 +36,39 @@ function App() {
       <a href="#shopping-list">Shopping List</a>
     </nav>
 
+    <main>
+      <form className="recipe-search" role="search">
+        <label htmlFor="recipe-query">Search Recipes</label>
+        <input id="recipe-query" name="search" type="search" placeholder="Search recipes..." />
+        <button type="submit">Search</button>
+        //add functionality here to generate recipe from database
+      </form>
+      <div className="user-stats">
+        <section id="stats" className="panel">
+          <h2>User Stats</h2>
+          //add user stats functionality here
+        </section>
+
+        <section id="calendar" className="panel">
+          <h2>Calendar</h2>
+        </section>
+
+        <section id="my-recipes" className="panel">
+          <h2>My Recipes</h2>
+        </section>
+
+        <section id="learn" className="panel">
+          <h2>Learn</h2>
+        </section>
+      </div>
+
+        <section id="discover" className="panel discover-panel">
+          <h2>Discover</h2>
+          <div className="recipe-list">
+          </div>
+        </section>
+    </main>
+
     </>
 
 
