@@ -2,7 +2,7 @@ function Stats() {
 
   return (
     <>
-      
+      <div>This is stats</div>
     </>
   )
 }
