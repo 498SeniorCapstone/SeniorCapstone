@@ -5,8 +5,12 @@ import './App.css'
 import Discover from './Discover/Discover';
 import Shopping_List from './Shopping_List/Shopping_List';
 import My_Recipes from './User_Recipes/My_Receips';
+import { useNavigate } from "react-router-dom";
 
 function App() {
+
+  //navigation
+  const navigate = useNavigate();
 
   //tab rendering/navigation state
   const [activeTab, setActiveTab] = useState<string>(() => {
@@ -25,9 +29,9 @@ function App() {
         <header className="site-header">
         <a className="site-name">Website Name</a>
         <div className="header-actions">
-          <button aria-label="Notifications">Notifications</button>
-          <button aria-label="Settings">Settings</button>
-          <button aria-label="Profile">Profile</button>
+          <button aria-label="Notifications" onClick={() => navigate('/Notifications')}>Notifications</button>
+          <button aria-label="Settings" onClick={() => navigate('/Settings')}>Settings</button>
+          <button aria-label="Profile" onClick={() => navigate('/User-Profile')}>Profile</button>
         </div>
       </header>
 
