@@ -7,34 +7,20 @@ import './App.css'
 function App() {
 
   return (
-    // <>
-    //   <div className='User_Info'>
-    //     <Questionaire />
-    //     <User_Info />
-    //   </div>
-    //   <div className='User_Stats'>
-    //     <Stats />
-    //   </div>
-    // </> 
-
     <>
     <header className="site-header">
-      <a className="site-name">Website Name</a>
-      <div className="header-actions">
-        <button aria-label="Notifications">Notifications</button>
-        <button aria-label="Settings">Settings</button>
-        <button aria-label="Profile">Profile</button>
-      </div>
+      <h1>Recipe App</h1>
+      <a aria-label="Notifications">Notifications</a>
+      <a aria-label="Settings">Settings</a>
+      <a aria-label="Profile">Profile</a>
     </header>
 
-    <nav className="site-nav" aria-label="Main navigation">
+    <nav className="nav-bar">
       {/*add clickability to the following tabs*/}
-      <button aria-label="stats">Stats</button>
-      <button aria-label="calendar">Calendar</button>
-      <button aria-label="discover">Discover</button>
-      <button aria-label="my-recipes">My Recipes</button>
-      <button aria-label="learn">Learn</button>
-      <button aria-label="shopping-list">Shopping List</button>
+      <a href="#stats">Stats</a>
+      <a href="#calendar">Calendar</a>
+      <a href="#discover">Discover</a>
+      <a href="#my-recipes">My Recipes</a>
     </nav>
 
     <main>
@@ -73,11 +59,7 @@ function App() {
           </div>
         </section>
     </main>
-
     </>
-
-
-
   )
 }
 

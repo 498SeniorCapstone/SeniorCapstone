@@ -1,3 +1,55 @@
+:root{
+  --color-bg: #DEC59E;
+  --color-surface: #C4866D;
+  --color-text:#64784D;
+  --color-text-muted:#6c757d;
+  --color-primary: #DEC59E;
+  --color-primary-dark: #C4866D;
+  --color-header:#33432B;
+  --color-header-text:#DEC59E;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2rem;
+
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+
+  --header-height: 64px;
+  --nav-height: 48px;
+  --max-width: 1200px;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body{
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+h1,h2{
+  margin:0;
+  line-height:1.2;
+}
+
+a{
+  color:inherit;
+}
+
+html{
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height)+var(--nav-height)+var(--space-3));
+}
+
+/*
 .counter {
   font-size: 16px;
   padding: 5px 10px;
@@ -189,10 +241,63 @@
   border-radius: 8px;
 }
 
-
+*/
 .widget{
   background-color: #ffffff;
   padding: 24px;
   border-radius: 16px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Header (title, notifications, settings, profile) */
+
+.site-header{
+  position:sticky;
+  top:0;
+  z-index:100;
+  height: var(--header-height);
+  display:flex;
+  align-items: center;
+  gap:var(--space-2);
+  padding:0% var(--space-4);
+  background: var(--color-header);
+  color: var(--color-header-text);
+}
+
+.site-header h1{
+  margin-right:auto;
+  font-size: 1.4rem;
+}
+
+.site-header a{
+  padding:var(--space-2) var(--space-3);
+  border-radius:999px;
+  text-decoration:none;
+  font: size 0.9rem;
+  cursor:pointer;
+  transition: background 0.2s;
+}
+
+.site-header a:hover{
+  background: rgba(255,255,255, 0.12);
+}
+.nav-bar{
+  overflow: hidden;
+  background: #333;
+  position: fixed;
+  top:auto;
+  width: 100%;
+}
+
+.nav-bar a{
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+.nav-bar a:hover{
+  background-color: #ddd;
+  color: black;
 }
