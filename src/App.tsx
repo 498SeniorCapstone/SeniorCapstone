@@ -33,6 +33,14 @@ function App() {
           <button aria-label="Settings" onClick={() => navigate('/Settings')}>Settings</button>
           <button aria-label="Profile" onClick={() => navigate('/User-Profile')}>Profile</button>
         </div>
+        <div className="recipe-search-container">
+          <form className="recipe-search" role="search">
+            <label htmlFor="recipe-query">Search Recipes</label>
+            <input id="recipe-query" name="search" type="search" />
+            <button type="submit">Search</button>
+          {/* add functionality here to generate recipe from database */}
+          </form>
+        </div>
       </header>
 
       <nav className="site-nav" aria-label="Main navigation">
@@ -44,14 +52,6 @@ function App() {
         {/* {<button aria-label="learn" onClick={() => setActiveTab('learn')}>Learn</button> */}
         <button aria-label="shopping-list" onClick={() => setActiveTab('shopping-list')}>Shopping List</button>
       </nav>
-     <div className="recipe-search-container">
-       <form className="recipe-search" role="search">
-          <label htmlFor="recipe-query">Search Recipes</label>
-          <input id="recipe-query" name="search" type="search" />
-          <button type="submit">Search</button>
-          {/* add functionality here to generate recipe from database */}
-        </form>
-     </div>
     </div>
 
     <main>
@@ -62,36 +62,29 @@ function App() {
       {activeTab === 'my-recipes' && <My_Recipes />}
       {activeTab === 'shopping-list' && <Shopping_List />}
       
-      {/* <div className="user-stats">
-        <section id="stats" className="panel widget">
+      <div className="widget-grid" id="widget-grid">
+        <section id="stats" className="widget">
           <h2>User Stats</h2>
-          {add functionality and return from individual files/functions }
         </section>
 
-        <section id="calendar" className="panel widget">
+        <section id="calendar" className="widget">
           <h2>Calendar</h2>
-          {add functionality here to generate recipe from database}
         </section>
 
-        <section id="my-recipes" className="panel widget">
+        <section id="my-recipes" className="widget">
           <h2>My Recipes</h2>
-          {add functionality here to generate recipe from database}
         </section>
 
-        <section id="learn" className="panel widget">
+        <section id="learn" className="widget">
           <h2>Learn</h2>
-          {add functionality here to generate recipe from database}
+        </section>
+
+        <section id="discover" className="widget discover-panel">
+          <h2>Discover</h2>
         </section>
       </div>
-
-        <section id="discover" className="panel widget discover-panel">
-          <h2>Discover</h2>
-          <div className="recipe-list">
-            {add functionality here to generate recipe from database}
-          </div>
-        </section> 
-        */}
-    </main>
+    </main> 
+      
 
     </div>
 
