@@ -1,6 +1,5 @@
 import './App.css'
 import { useNavigate } from "react-router-dom";
-import Search_Engine from './Search_Engine';
 
 function App() {
 
@@ -16,20 +15,13 @@ function App() {
             <button aria-label="Notifications" onClick={() => navigate('/Notifications')}>Notifications</button>
             <button aria-label="Settings" onClick={() => navigate('/Settings')}>Settings</button>
             <button aria-label="Profile" onClick={() => navigate('/User-Profile')}>Profile</button>
-          </div>
-          {/* <div className="recipe-search-container">
-            <form className="recipe-search" role="search">
-              <label htmlFor="recipe-query">Search Recipes</label>
-              <input id="recipe-query" name="search" type="search" />
-              <button type="submit">Search</button>
-            </form>
-          </div> */}
-          
+          </div> 
         </header>
       </div>
 
       <main>
-        <Search_Engine />
+        <h1 onClick={() => navigate('/Search')}>Search Recipes!</h1>
+
         <div className="widget-grid" id="widget-grid">
           <section id="stats" className="widget">
             <h2 onClick={() => navigate('/Stats')}>User Stats</h2>

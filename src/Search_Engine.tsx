@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Search, X, } from 'lucide-react';
 import {supabase} from './lib/supabase';
+import { useNavigate } from "react-router-dom";
 
 type Recipe = {
     id: number;                       
@@ -18,6 +19,8 @@ type Recipe = {
 }; 
 
 function Search_Engine() {
+    const navigate = useNavigate();
+
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -56,13 +59,19 @@ function Search_Engine() {
         return recipes.filter(item =>
             item.Name?.toLowerCase().includes(term) ||
             item.Cuisine?.toLowerCase().includes(term) ||
-            item.Ingredients?.some(ing => ing.toLowerCase().includes(term))
+            item.Ingredients?.some(ing => ing.toLowerCase().includes(term)) || 
+            item['Diet type']?.some(diet => diet.toLowerCase().includes(term)) ||
+            item['Meal Type']?.toLowerCase().includes(term)
         );
     }, [recipes, debouncedSearchTerm]);
 
   return (
-        <div style={{ maxWidth: '600px', margin: '50px auto', padding: '0 20px', fontFamily: 'sans-serif' }}>
-            <h1>Recipe Search</h1>
+        <div>
+            <div>
+                <button onClick={() => navigate('/Dashboard')}>Back to Dashboard</button>
+                <h1>Search</h1>
+            </div>
+            <div style={{ maxWidth: '600px', margin: '50px auto', padding: '0 20px', fontFamily: 'sans-serif' }}>
             <div className="search-container">
                 <Search className="search-icon" />
                 <input
@@ -102,6 +111,7 @@ function Search_Engine() {
                     <p>No recipes found.</p>
                 )}
             </div>
+        </div>
         </div>
     );
 }
