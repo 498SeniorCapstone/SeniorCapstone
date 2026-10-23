@@ -6,6 +6,7 @@ import Discover from './Discover/Discover';
 import Shopping_List from './Shopping_List/Shopping_List';
 import My_Recipes from './User_Recipes/My_Receips';
 import { useNavigate } from "react-router-dom";
+import Search_Engine from './Search_Engine';
 
 function App() {
 
@@ -33,14 +34,14 @@ function App() {
           <button aria-label="Settings" onClick={() => navigate('/Settings')}>Settings</button>
           <button aria-label="Profile" onClick={() => navigate('/User-Profile')}>Profile</button>
         </div>
-        <div className="recipe-search-container">
+        {/* <div className="recipe-search-container">
           <form className="recipe-search" role="search">
             <label htmlFor="recipe-query">Search Recipes</label>
             <input id="recipe-query" name="search" type="search" />
             <button type="submit">Search</button>
-          {/* add functionality here to generate recipe from database */}
           </form>
-        </div>
+        </div> */}
+        <Search_Engine />
       </header>
 
       <nav className="site-nav" aria-label="Main navigation">
@@ -55,12 +56,6 @@ function App() {
     </div>
 
     <main>
-
-      {activeTab === 'stats' && <Stats />}
-      {activeTab === 'calendar' && <Calendar />}
-      {activeTab === 'discover' && <Discover />}
-      {activeTab === 'my-recipes' && <My_Recipes />}
-      {activeTab === 'shopping-list' && <Shopping_List />}
       
       <div className="widget-grid" id="widget-grid">
         <section id="stats" className="widget">
@@ -75,13 +70,19 @@ function App() {
           <h2>My Recipes</h2>
         </section>
 
-        <section id="learn" className="widget">
-          <h2>Learn</h2>
+        <section id="shopping-list" className="widget">
+          <h2>Shopping List</h2>
         </section>
 
         <section id="discover" className="widget discover-panel">
           <h2>Discover</h2>
         </section>
+
+        {activeTab === 'stats' && <Stats />}
+        {activeTab === 'calendar' && <Calendar />}
+        {activeTab === 'discover' && <Discover />}
+        {activeTab === 'my-recipes' && <My_Recipes />}
+        {activeTab === 'shopping-list' && <Shopping_List />}
       </div>
     </main> 
       
