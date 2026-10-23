@@ -251,6 +251,7 @@ html{
   grid-auto-rows:minmax(220px, 33vh);
   gap:16px;
   grid-auto-flow:dense;
+  margin:32px;
 }
 .widget{
   background-color: #33442B;
@@ -276,7 +277,11 @@ html{
 .widget-toggle .chev{
   transition:transform 0.2s;
 }
-
+.widget h2 {
+  margin:0;
+  padding:10px;
+  color: var(--color-header-text);
+}
 
 
 /* Header (title, notifications, settings, profile) */
