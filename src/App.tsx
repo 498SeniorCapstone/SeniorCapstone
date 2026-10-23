@@ -20,7 +20,7 @@ function App() {
       </div>
 
       <main>
-        <h1 onClick={() => navigate('/Search')}>Search Recipes!</h1>
+        <h1 onClick={() => navigate('/Search')}>Discover Recipes!</h1>
 
         <div className="widget-grid" id="widget-grid">
           <section id="stats" className="widget">
@@ -37,10 +37,6 @@ function App() {
 
           <section id="shopping-list" className="widget">
             <h2 onClick={() => navigate('/Shopping-List')}>Shopping List</h2>
-          </section>
-
-          <section id="discover" className="widget discover-panel">
-            <h2 onClick={() => navigate('/Discover')}>Discover</h2>
           </section>
         </div>
       </main> 
