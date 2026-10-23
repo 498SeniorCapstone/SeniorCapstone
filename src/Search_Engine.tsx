@@ -1,39 +1,66 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Search, X, } from 'lucide-react';
+import {supabase} from './lib/supabase';
+
+type Recipe = {
+    id: number;                       
+    created_at?: string;                
+    Name: string | null;
+    Link: string | null;
+    'Diet type': string[] | null;
+    'Meal Type': string | null;
+    Symbols: number[] | null;
+    'Kitchen Appliances': string[] | null;
+    Cuisine: string | null;
+    Nutrition: number[] | null;       
+    Ingredients: string[] | null;
+    Time: number | null;
+}; 
 
 function Search_Engine() {
-    //get recipe data from database and store it in a variable called MOCK_DATA
-    const MOCK_DATA: { id: number; title: string; description: string }[] = useMemo(() => {
-     return ([
-        { id: 1, title: 'Spaghetti Bolognese', description: 'A classic Italian pasta dish with rich meat sauce.' },
-        { id: 2, title: 'Chicken Tikka Masala', description: 'Tender chicken pieces in a creamy tomato sauce.' },
-        { id: 3, title: 'Beef Stroganoff', description: 'Sautéed beef in a sour cream sauce served over noodles.' },
-        { id: 4, title: 'Vegetable Stir Fry', description: 'A mix of fresh vegetables sautéed in a savory sauce.' },
-        { id: 5, title: 'Fish Tacos', description: 'Grilled fish served in soft tortillas with fresh toppings.' }
-     ]
-      );
-    }, []);
+    const [recipes, setRecipes] = useState<Recipe[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
-    const searchResults = useMemo(() => {
-        if (!debouncedSearchTerm.trim()) {
-            return []; // Return no results if nothing is searched
-        }
-        return MOCK_DATA.filter(item =>
-            item.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
-        );
-    }, [MOCK_DATA, debouncedSearchTerm]);
 
+    // Fetch recipes from Supabase once, when the component mounts
     useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-        }, 300); // 300ms delay
+        async function fetchRecipes() {
+            const { data, error } = await supabase
+                .from('Recipe')
+                .select('id, Name, Link, "Diet type", "Meal Type", Cuisine, Ingredients, Time');
 
+            if (error) {
+                setError(error.message);
+            } else {
+                setRecipes((data as Recipe[]) ?? []);
+            }
+            setLoading(false);
+        }
+        fetchRecipes();
+    }, []);
+
+    // Debounce the search input
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 300);
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-return(
+    const searchResults = useMemo(() => {
+        const term = debouncedSearchTerm.trim().toLowerCase();
+        if (!term) return [];
+        return recipes.filter(item =>
+            item.Name?.toLowerCase().includes(term) ||
+            item.Cuisine?.toLowerCase().includes(term) ||
+            item.Ingredients?.some(ing => ing.toLowerCase().includes(term))
+        );
+    }, [recipes, debouncedSearchTerm]);
+
+  return (
         <div style={{ maxWidth: '600px', margin: '50px auto', padding: '0 20px', fontFamily: 'sans-serif' }}>
             <h1>Recipe Search</h1>
             <div className="search-container">
@@ -51,11 +78,24 @@ return(
                 )}
             </div>
             <div className="results-container">
-                {searchResults.length > 0 ? (
+                {loading ? (
+                    <p>Loading recipes...</p>
+                ) : error ? (
+                    <p>Error: {error}</p>
+                ) : searchResults.length > 0 ? (
                     searchResults.map((item) => (
                         <div key={item.id} className="result-item">
-                            <h2>{item.title}</h2>
-                            <p>{item.description}</p>
+                            <h2>{item.Name}</h2>
+                            <p>
+                                {[item.Cuisine, item['Meal Type'], item.Time ? `${item.Time} min` : null]
+                                    .filter(Boolean)
+                                    .join(' · ')}
+                            </p>
+                            {item.Link && (
+                                <a href={item.Link} target="_blank" rel="noreferrer">
+                                    View recipe
+                                </a>
+                            )}
                         </div>
                     ))
                 ) : (
