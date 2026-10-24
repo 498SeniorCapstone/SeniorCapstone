@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Search, X, } from 'lucide-react';
 import {supabase} from './lib/supabase';
 import { useNavigate } from "react-router-dom";
+import './Search_Engine.css';
 
 type Recipe = {
     id: number;                       
@@ -67,12 +68,11 @@ function Search_Engine() {
 
   return (
         <div>
-            <div>
-                <button onClick={() => navigate('/Dashboard')}>Back to Dashboard</button>
-                <h1>Search</h1>
+            <div className="search-header-container">
+                <button className="back-button" onClick={() => navigate('/Dashboard')}>Back to Dashboard</button>
+                <h1 className="search-title">Search Apptrition's Recipes</h1>
             </div>
-            <div style={{ maxWidth: '600px', margin: '50px auto', padding: '0 20px', fontFamily: 'sans-serif' }}>
-            <div className="search-container">
+            <div className="search-bar-container">
                 <Search className="search-icon" />
                 <input
                     type="text"
@@ -111,7 +111,6 @@ function Search_Engine() {
                     <p>No recipes found.</p>
                 )}
             </div>
-        </div>
         </div>
     );
 }
