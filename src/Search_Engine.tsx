@@ -94,7 +94,8 @@ function Search_Engine() {
                 ) : searchResults.length > 0 ? (
                     searchResults.map((item) => (
                         <div key={item.id} className="result-item">
-                            <h2>{item.Name}</h2>
+                            <div className="result-item-content">
+                                <h2>{item.Name}</h2>
                             <p>
                                 {[item.Cuisine, item['Meal Type'], item.Time ? `${item.Time} min` : null]
                                     .filter(Boolean)
@@ -105,6 +106,7 @@ function Search_Engine() {
                                     View recipe
                                 </a>
                             )}
+                            </div>
                         </div>
                     ))
                 ) : (
