@@ -1,4 +1,4 @@
-:root{
+.main-app-root{
   --color-bg: #DEC59E;
   --color-surface: #C4866D;
   --color-text:#64784D;
@@ -23,19 +23,18 @@
   --header-height: 64px;
   --nav-height: 48px;
   --max-width: 1200px;
-}
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-body{
   margin: 0;
   font-family: 'Inter', sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
   line-height: 1.6;
+}
+
+@scope (.main-app-root) {
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 h1,h2{
@@ -45,11 +44,6 @@ h1,h2{
 
 a{
   color:inherit;
-}
-
-html{
-  scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--header-height)+var(--nav-height)+var(--space-3));
 }
 
 /*
@@ -330,5 +324,6 @@ html{
 .nav-bar a:hover{
   background-color: #ddd;
   color: black;
+}
 }
 
