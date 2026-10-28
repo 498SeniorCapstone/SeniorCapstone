@@ -1,5 +1,5 @@
 import type { MealPreferences } from './types'
-import { supabase } from '../../lib/supabase'
+import { supabase } from '../lib/supabase'
 
 function requireSupabase() {
   if (!supabase) throw new Error('Supabase is not configured.')

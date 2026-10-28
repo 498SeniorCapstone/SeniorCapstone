@@ -1,3 +1,26 @@
+:root {
+  --color-bg: #DEC59E;
+  --color-surface: #C4866D;
+  --color-text:#64784D;
+  --color-text-muted:#6c757d;
+  --color-primary: #DEC59E;
+  --color-primary-dark: #C4866D;
+  --color-header:#33432B;
+  --color-header-text:#DEC59E;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 .main-app-root{
   --color-bg: #DEC59E;
   --color-surface: #C4866D;

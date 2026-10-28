@@ -5,15 +5,16 @@ import { Route, Routes, useNavigate } from 'react-router-dom'
 import Stats from './User_Stats/Stats'
 import Calendar from './Calendar/Calendar'
 import './App.css'
-import './features/questionnaire/styles.css'
+import './questionarre/styles.css'
 import Discover from './Discover/Discover'
 import Shopping_List from './Shopping_List/Shopping_List'
 import My_Recipes from './User_Recipes/My_Receips'
 import User_Info from './User_Info/User_Info'
 import Notifications from './Notifications/Notifications'
 import Settings from './Settings/Settings'
-import { Questionnaire, getQuestionnaireStatus, submitPreferences } from './features/questionnaire'
-import type { MealPreferences } from './features/questionnaire'
+import Search_Engine from './Search_Engine'
+import { Questionnaire, getQuestionnaireStatus, submitPreferences } from './questionarre'
+import type { MealPreferences } from './questionarre'
 import { supabase, supabaseConfigurationError } from './lib/supabase'
 
 type CompletionState = 'loading' | 'ready' | 'error'
@@ -105,6 +106,12 @@ function App() {
         <Route path="/User-Profile" element={<User_Info answers={completedAnswers} />} />
         <Route path="/Notifications" element={<Notifications />} />
         <Route path="/Settings" element={<Settings />} />
+        <Route path="/Stats" element={<Stats />} />
+        <Route path="/Calendar" element={<Calendar />} />
+        <Route path="/Discover" element={<Discover />} />
+        <Route path="/Shopping-List" element={<Shopping_List />} />
+        <Route path="/My-Recipes" element={<My_Recipes />} />
+        <Route path="/Search" element={<Search_Engine />} />
       </Routes>
     </div>
   )

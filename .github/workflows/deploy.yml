@@ -15,6 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  
   build:
     runs-on: ubuntu-latest
 
@@ -30,15 +31,26 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+      
+      - name: Check env vars
+        run: |
+          [ -z "$VITE_SUPABASE_URL" ] && echo "URL is EMPTY" || echo "URL is set (length ${#VITE_SUPABASE_URL})"
+          [ -z "$VITE_SUPABASE_ANON_KEY" ] && echo "KEY is EMPTY" || echo "KEY is set (length ${#VITE_SUPABASE_ANON_KEY})"
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
       - name: Build
         run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
-  
+
   deploy:
     needs: build
     runs-on: ubuntu-latest

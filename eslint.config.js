@@ -21,7 +21,7 @@ export default defineConfig([
   },
   {
     // The questionnaire source retains its prototype compatibility guard.
-    files: ['src/features/questionnaire/**/*.{ts,tsx}'],
+    files: ['src/questionarre/**/*.{ts,tsx}'],
     rules: {
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-explicit-any': 'off',

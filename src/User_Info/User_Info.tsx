@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import type { MealPreferences } from "../features/questionnaire";
+import type { MealPreferences } from "../questionarre";
 
 interface UserInfoProps {
   answers: MealPreferences | null;
