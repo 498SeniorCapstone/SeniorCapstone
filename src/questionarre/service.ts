@@ -93,5 +93,3 @@ export async function submitDemoPreferences(profileId: number, answers: MealPref
   }
   return { ok: true as const, answers }
 }
-
-

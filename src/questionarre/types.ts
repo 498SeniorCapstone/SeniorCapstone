@@ -31,5 +31,3 @@ export const initialAnswers: MealPreferences = {
   foodsToSkip: [], equipment: [],
   otherEquipment: '', ingredients: '', obstacles: [], obstacleDetails: '',
 }
-
-

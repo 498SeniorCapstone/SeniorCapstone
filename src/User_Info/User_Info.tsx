@@ -1,11 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import type { MealPreferences } from "../questionarre";
 
-interface UserInfoProps {
-  answers: MealPreferences | null;
-}
-
-function User_Info({ answers }: UserInfoProps) {
+function User_Info() {
   //navigation
   const navigate = useNavigate();
 
@@ -13,7 +8,7 @@ function User_Info({ answers }: UserInfoProps) {
     <>
     <a className="site-name">Website Name</a>
     <button aria-label="Back to Dashboard" onClick={() => navigate('/Dashboard')}>Back to Dashboard</button>
-      <h1 data-questionnaire-complete={answers !== null}>
+      <h1>
         this is user profile 
       </h1>
     </>

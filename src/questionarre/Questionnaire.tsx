@@ -1,9 +1,9 @@
-// @ts-nocheck - The questionnaire is shared with the standalone prototype.
 import { useEffect, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
 import { clearDraft, restoreDraft, saveDraft } from './storage'
 import { validateAnswers } from './validation'
 import { TOTAL_STEPS } from './types'
-import type { MealPreferences } from './types'
+import type { FormErrors, MealPreferences } from './types'
 
 const goals = ['Quick and easy', 'High protein', 'Healthy comfort food', 'Family favorites', 'Low calorie', 'Gut friendly', 'Fakeaway']
 const dietary = ['None', 'Vegetarian', 'Vegan', 'Pescatarian', 'Gluten free', 'Dairy free', 'Nut free']
@@ -20,22 +20,22 @@ export function Questionnaire({ onComplete, draftScope }: QuestionnaireProps) {
   const [restored] = useState(() => restoreDraft(draftScope))
   const [answers, setAnswers] = useState(restored.answers)
   const [step, setStep] = useState(restored.step)
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState<FormErrors>({})
   const [foodDraft, setFoodDraft] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submissionError, setSubmissionError] = useState('')
-  const headingRef = useRef(null)
-  const firstInvalidRef = useRef(null)
+  const headingRef = useRef<HTMLHeadingElement | null>(null)
+  const firstInvalidRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => { headingRef.current?.focus() }, [step])
   useEffect(() => { saveDraft(draftScope, answers, step) }, [answers, draftScope, step])
 
-  const update = (key, value) => {
+  const update = (key: keyof MealPreferences, value: string | string[]) => {
     setAnswers(current => ({ ...current, [key]: value }))
     setErrors(current => { const next = { ...current }; delete next[key]; return next })
   }
 
-  const toggle = (key, option) => {
+  const toggle = (key: 'dietaryNeeds' | 'goals' | 'equipment' | 'obstacles', option: string) => {
     const current = answers[key]
     let next
     if (key === 'dietaryNeeds') {
@@ -62,7 +62,7 @@ export function Questionnaire({ onComplete, draftScope }: QuestionnaireProps) {
     return !Object.keys(next).length
   }
 
-  const goTo = next => {
+  const goTo = (next: number) => {
     setStep(next)
     setErrors({})
     setSubmissionError('')
@@ -132,7 +132,9 @@ export function Questionnaire({ onComplete, draftScope }: QuestionnaireProps) {
   </main>
 }
 
-function Step({ title, intro, children, headingRef }) { return <section className="step-panel"><h2 ref={headingRef} tabIndex={-1}>{title}</h2><p className="step-intro">{intro}</p><div className="step-content">{children}</div></section> }
-function Error({ children }) { return <p className="error" role="alert">{children}</p> }
-function Field({ id, label, value, onChange, type = 'text', min, max, step, placeholder, optional, suffix, error, invalidRef }) { return <section className="field"><label htmlFor={id}>{label} <span className={optional ? 'optional' : 'required'}>{optional ? 'Optional' : 'Required'}</span></label><div className={suffix ? 'input-with-suffix' : ''}><input ref={element => { if (error && invalidRef) invalidRef.current = element }} id={id} value={value} onChange={event => onChange(event.target.value)} type={type} min={min} max={max} step={step} placeholder={placeholder} aria-invalid={!!error} />{suffix}</div>{error && <Error>{error}</Error>}</section> }
-function ChoiceGrid({ options, selected, onToggle, error, compact, invalidRef }) { return <><div className={`choice-grid ${compact ? 'compact' : ''}`} role="group">{options.map((option, index) => <button ref={element => { if (error && index === 0 && invalidRef) invalidRef.current = element }} type="button" className={`choice-card ${selected.includes(option) ? 'selected' : ''}`} aria-pressed={selected.includes(option)} key={option} onClick={() => onToggle(option)}><span className="choice-indicator">{selected.includes(option) ? '✓' : ''}</span><span>{option}</span></button>)}</div>{error && <Error>{error}</Error>}</> }
+function Step({ title, intro, children, headingRef }: { title: string; intro: string; children: ReactNode; headingRef: { current: HTMLHeadingElement | null } }) { return <section className="step-panel"><h2 ref={headingRef} tabIndex={-1}>{title}</h2><p className="step-intro">{intro}</p><div className="step-content">{children}</div></section> }
+function Error({ children }: { children: ReactNode }) { return <p className="error" role="alert">{children}</p> }
+interface FieldProps { id: string; label: string; value: string; onChange: (value: string) => void; type?: string; min?: string; max?: string; step?: string; placeholder?: string; optional?: boolean; suffix?: ReactNode; error?: string; invalidRef?: { current: HTMLElement | null } }
+function Field({ id, label, value, onChange, type = 'text', min, max, step, placeholder, optional, suffix, error, invalidRef }: FieldProps) { return <section className="field"><label htmlFor={id}>{label} <span className={optional ? 'optional' : 'required'}>{optional ? 'Optional' : 'Required'}</span></label><div className={suffix ? 'input-with-suffix' : ''}><input ref={element => { if (error && invalidRef) invalidRef.current = element }} id={id} value={value} onChange={event => onChange(event.target.value)} type={type} min={min} max={max} step={step} placeholder={placeholder} aria-invalid={!!error} />{suffix}</div>{error && <Error>{error}</Error>}</section> }
+interface ChoiceGridProps { options: string[]; selected: string[]; onToggle: (option: string) => void; error?: string; compact?: boolean; invalidRef?: { current: HTMLElement | null } }
+function ChoiceGrid({ options, selected, onToggle, error, compact, invalidRef }: ChoiceGridProps) { return <><div className={`choice-grid ${compact ? 'compact' : ''}`} role="group">{options.map((option, index) => <button ref={element => { if (error && index === 0 && invalidRef) invalidRef.current = element }} type="button" className={`choice-card ${selected.includes(option) ? 'selected' : ''}`} aria-pressed={selected.includes(option)} key={option} onClick={() => onToggle(option)}><span className="choice-indicator">{selected.includes(option) ? '✓' : ''}</span><span>{option}</span></button>)}</div>{error && <Error>{error}</Error>}</> }

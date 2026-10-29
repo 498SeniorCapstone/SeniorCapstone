@@ -68,5 +68,3 @@ export function saveDraft(userId: string, answers: MealPreferences, step: number
 export function clearDraft(userId: string) {
   try { sessionStorage.removeItem(draftKey(userId)) } catch { /* storage can be unavailable */ }
 }
-
-

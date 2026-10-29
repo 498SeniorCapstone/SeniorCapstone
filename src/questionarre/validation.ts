@@ -17,5 +17,3 @@ export function validateAnswers(answers: MealPreferences, target: number): FormE
   }
   return errors
 }
-
-

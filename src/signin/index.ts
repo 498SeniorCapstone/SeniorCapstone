@@ -1,3 +1,4 @@
+export { AppGate } from './AppGate'
 export { DemoSignin } from './DemoSignin'
 export { AccountUpgrade } from './AccountUpgrade'
 export { restoreDemoProfile, selectDemoProfile, signOutDemo, syncOwnedProfileIdentity } from './profileService'

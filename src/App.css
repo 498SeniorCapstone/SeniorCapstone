@@ -1,27 +1,4 @@
-:root {
-  --color-bg: #DEC59E;
-  --color-surface: #C4866D;
-  --color-text:#64784D;
-  --color-text-muted:#6c757d;
-  --color-primary: #DEC59E;
-  --color-primary-dark: #C4866D;
-  --color-header:#33432B;
-  --color-header-text:#DEC59E;
-}
-
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  line-height: 1.6;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-.main-app-root{
+:root{
   --color-bg: #DEC59E;
   --color-surface: #C4866D;
   --color-text:#64784D;
@@ -46,18 +23,19 @@ html {
   --header-height: 64px;
   --nav-height: 48px;
   --max-width: 1200px;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body{
   margin: 0;
   font-family: 'Inter', sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
   line-height: 1.6;
-}
-
-@scope (.main-app-root) {
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
 }
 
 h1,h2{
@@ -67,6 +45,11 @@ h1,h2{
 
 a{
   color:inherit;
+}
+
+html{
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height)+var(--nav-height)+var(--space-3));
 }
 
 /*
@@ -268,6 +251,7 @@ a{
   grid-auto-rows:minmax(220px, 33vh);
   gap:16px;
   grid-auto-flow:dense;
+  margin:32px;
 }
 .widget{
   background-color: #33442B;
@@ -293,10 +277,27 @@ a{
 .widget-toggle .chev{
   transition:transform 0.2s;
 }
-
+.widget h2 {
+  margin:0;
+  padding:10px;
+  color: var(--color-header-text);
+}
 
 
 /* Header (title, notifications, settings, profile) */
+.site-header-container{
+  position:sticky;
+  top:0;
+  z-index:100;
+  height: var(--header-height);
+  display:column;
+  justify-content:center;
+  /* align-items: center; */
+  gap:var(--space-2);
+  padding:0% var(--space-4);
+  background: var(--color-header);
+  color: var(--color-header-text);
+}
 
 .site-header{
   position:sticky;
@@ -309,6 +310,8 @@ a{
   padding:0% var(--space-4);
   background: var(--color-header);
   color: var(--color-header-text);
+  justify-content:center;
+
 }
 
 .site-header h1{
@@ -328,5 +331,5 @@ a{
 .site-header a:hover{
   background: rgba(255,255,255, 0.12);
 }
-}
+
 
