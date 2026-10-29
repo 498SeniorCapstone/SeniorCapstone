@@ -62,15 +62,6 @@ input[aria-invalid="true"] { border-color: #d9453f; }
 .input-with-suffix select { flex: 0 0 88px; width: 88px; min-width: 88px; border-left: 0; border-radius: 0 4px 4px 0; background: #fafafa; }
 .optional-note { margin: 0; padding: 10px 12px; border-left: 3px solid #d9453f; background: #fafafa; color: #656565; font-size: 13px; line-height: 1.4; }
 .helper-text { margin: -1px 0 10px; color: #6c6c6c; font-size: 13px; line-height: 1.45; }
-.weekly-budget { display: grid; gap: 14px; min-width: 0; }
-.weekly-budget legend { margin-bottom: 0; }
-.budget-helper { margin: 0; color: #6c6c6c; font-size: 13px; line-height: 1.45; }
-.budget-amount-field { display: grid; gap: 7px; min-width: 0; }
-.budget-amount-field > label { font-size: 13px; }
-.budget-amount-wrap { display: flex; min-width: 0; width: 100%; }
-.budget-symbol { display: grid; flex: 0 0 44px; place-items: center; min-height: 48px; border: 1px solid #cfcfcf; border-right: 0; border-radius: 4px 0 0 4px; background: #fafafa; color: #555; font-size: 16px; }
-.budget-amount-wrap input { flex: 1 1 auto; width: 0; min-width: 0; min-height: 48px; border-radius: 0 4px 4px 0; }
-.weekly-budget .flexible-option { margin-top: 0; }
 .choice-hint { margin: -10px 0 0; color: #737373; font-size: 12px; font-weight: 600; }
 .error { margin: 0; color: #c43631; font-size: 13px; line-height: 1.4; }
 
@@ -113,8 +104,6 @@ input[aria-invalid="true"] { border-color: #d9453f; }
 .chip button { padding: 0; border: 0; background: transparent; color: #666; font-size: 17px; line-height: 1; }
 .other-toggle { width: max-content; min-width: 110px; margin-top: 10px; }
 .nested-field { max-width: 390px; margin-top: 15px; }
-.flexible-option { display: inline-flex; align-items: center; gap: 9px; width: max-content; margin-top: 11px; color: #3e3e3e; font-size: 14px; }
-.flexible-option input { width: 18px; min-height: 18px; padding: 0; accent-color: #d9453f; }
 
 .form-actions { display: flex; justify-content: space-between; gap: 14px; margin-top: 28px; }
 .button { min-height: 48px; padding: 0 20px; font-size: 16px; }
@@ -211,9 +200,6 @@ input[aria-invalid="true"] { border-color: #d9453f; }
   .choice-card { min-height: 42px; padding: 8px 11px; }
   .choice-grid.compact { gap: 5px; }
   .compact .choice-card { min-height: 42px; padding: 8px 4px; }
-  .weekly-budget { gap: 12px; }
-  .budget-symbol, .budget-amount-wrap input { min-height: 44px; }
-  .budget-helper { font-size: 12px; }
   .form-actions { min-height: 48px; margin-top: 0; padding-top: 12px; }
   .privacy-note { margin: 8px 0 0; }
   }

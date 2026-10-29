@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react'
-import type { User } from '@supabase/supabase-js'
-import type { ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 import Stats from './User_Stats/Stats'
 import Calendar from './Calendar/Calendar'
 import './App.css'
 import './questionarre/styles.css'
+import './signin/styles.css'
 import Discover from './Discover/Discover'
 import Shopping_List from './Shopping_List/Shopping_List'
 import My_Recipes from './User_Recipes/My_Receips'
@@ -13,96 +12,178 @@ import User_Info from './User_Info/User_Info'
 import Notifications from './Notifications/Notifications'
 import Settings from './Settings/Settings'
 import Search_Engine from './Search_Engine'
-import { Questionnaire, getQuestionnaireStatus, submitPreferences } from './questionarre'
+import { AccountUpgrade, DemoSignin, finishAnonymousAccountUpgrade, getCurrentAuthUser, restoreDemoProfile, selectDemoProfile, signInWithPassword, signOutDemo, signUpWithPassword, syncOwnedProfileIdentity, upgradeAnonymousAccount } from './signin'
+import type { DemoProfile } from './signin'
+import type { AccountUpgradeResult, AuthFlowResult, SignInValues, SignUpValues } from './signin'
+import { Questionnaire, clearDraft, submitDemoPreferences } from './questionarre'
 import type { MealPreferences } from './questionarre'
 import { supabase, supabaseConfigurationError } from './lib/supabase'
 
-type CompletionState = 'loading' | 'ready' | 'error'
+function demoDraftScope(profileId: number) { return `demo-profile:${profileId}` }
+
+type RestoreState = 'loading' | 'ready' | 'error'
 
 function App() {
-  const [completionState, setCompletionState] = useState<CompletionState>('loading')
-  const [completionError, setCompletionError] = useState('')
+  const [demoProfile, setDemoProfile] = useState<DemoProfile | null>(null)
   const [isQuestionnaireComplete, setIsQuestionnaireComplete] = useState(false)
   const [completedAnswers, setCompletedAnswers] = useState<MealPreferences | null>(null)
-  const [authenticatedUser, setAuthenticatedUser] = useState<User | null>(null)
-  const [retry, setRetry] = useState(0)
+  const [restoreState, setRestoreState] = useState<RestoreState>('loading')
+  const [restoreError, setRestoreError] = useState('')
+  const restoreRequest = useRef(0)
+  const activeAuthUserId = useRef<string | null>(null)
 
-  useEffect(() => {
-    let active = true
+  const applyProfile = useCallback((profile: DemoProfile | null) => {
+    setDemoProfile(profile)
+    activeAuthUserId.current = profile?.auth_user_id ?? null
+    setIsQuestionnaireComplete(profile?.questionnare_completed === true)
+    setCompletedAnswers(null)
+    setRestoreError('')
+    setRestoreState('ready')
+  }, [])
 
-    const loadCurrentUserStatus = async (user: User) => {
-      if (!supabase) throw new Error(supabaseConfigurationError)
-      const status = await getQuestionnaireStatus()
-      if (!active) return
-      setAuthenticatedUser(user)
-      setCompletedAnswers(null)
-      setIsQuestionnaireComplete(status.isComplete)
-      setCompletionState('ready')
-      setCompletionError('')
-    }
-
-    const load = async () => {
-      setCompletionState('loading')
-      setCompletionError('')
+  const restore = useCallback(async () => {
+    const requestId = ++restoreRequest.current
+    setRestoreState('loading')
+    setRestoreError('')
+    try {
+      const profile = await restoreDemoProfile()
+      if (requestId !== restoreRequest.current) return
+      applyProfile(profile)
+    } catch (error) {
+      if (requestId !== restoreRequest.current) return
+      setDemoProfile(null)
+      activeAuthUserId.current = null
       setIsQuestionnaireComplete(false)
       setCompletedAnswers(null)
-      try {
-        if (!supabase) throw new Error(supabaseConfigurationError)
-        const { data, error } = await supabase.auth.getUser()
-        if (error) throw error
-        if (!data.user) throw new Error('No authenticated user is available. Sign in and retry.')
-        if (active) setAuthenticatedUser(data.user)
-        await loadCurrentUserStatus(data.user)
-      } catch (error) {
-        if (!active) return
-        setAuthenticatedUser(null)
-        setCompletionState('error')
-        setCompletionError(error instanceof Error ? error.message : 'Could not load questionnaire status.')
-      }
+      setRestoreError(error instanceof Error ? error.message : supabaseConfigurationError)
+      setRestoreState('error')
     }
+  }, [applyProfile])
 
-    void load()
-    if (!supabase) return () => { active = false }
+  useEffect(() => {
+    queueMicrotask(() => void restore())
+  }, [restore])
 
+  useEffect(() => {
+    if (!supabase) return
     const { data: authSubscription } = supabase.auth.onAuthStateChange((event, session) => {
-      if (!active) return
-      if (!session?.user || event === 'SIGNED_OUT') {
-        setAuthenticatedUser(null)
+      if (event === 'SIGNED_OUT' || !session) {
+        restoreRequest.current += 1
+        activeAuthUserId.current = null
+        setDemoProfile(null)
         setCompletedAnswers(null)
         setIsQuestionnaireComplete(false)
-        setCompletionState('error')
-        setCompletionError('No authenticated user is available. Sign in and retry.')
-        return
+        setRestoreError('')
+        setRestoreState('ready')
+      } else if (activeAuthUserId.current && session.user.id !== activeAuthUserId.current) {
+        void restore()
       }
-      void load()
     })
+    return () => authSubscription.subscription.unsubscribe()
+  }, [restore])
 
-    return () => {
-      active = false
-      authSubscription.subscription.unsubscribe()
+  const beginDemo = async (displayName: string) => {
+    const profile = await selectDemoProfile(displayName)
+    restoreRequest.current += 1
+    applyProfile(profile)
+  }
+
+  const completeAuthenticatedProfile = async (displayName: string): Promise<AuthFlowResult> => {
+    const profile = await selectDemoProfile(displayName)
+    await syncOwnedProfileIdentity()
+    restoreRequest.current += 1
+    applyProfile(profile)
+    return 'ready'
+  }
+
+  const handleSignIn = async (values: SignInValues): Promise<AuthFlowResult> => {
+    const user = await signInWithPassword(values)
+    const profile = await restoreDemoProfile()
+    if (profile) {
+      await syncOwnedProfileIdentity()
+      restoreRequest.current += 1
+      applyProfile(profile)
+      return 'ready'
     }
-  }, [retry])
+    const metadataName = typeof user.user_metadata?.username === 'string' ? user.user_metadata.username : ''
+    if (metadataName) return completeAuthenticatedProfile(metadataName)
+    return 'profile-setup'
+  }
 
-  const completeQuestionnaire = async (answers: MealPreferences) => {
-    await submitPreferences(answers)
+  const handleSignUp = async (values: SignUpValues): Promise<AuthFlowResult> => {
+    const currentUser = await getCurrentAuthUser()
+    if (currentUser?.is_anonymous) {
+      const upgradeResult = await upgradeAnonymousAccount(values.email, values.password)
+      if (upgradeResult === 'confirmation-required') return 'confirmation-required'
+      return completeAuthenticatedProfile(values.username)
+    }
+    if (currentUser) return completeAuthenticatedProfile(values.username)
+
+    const response = await signUpWithPassword(values)
+    if (!response.session) return 'confirmation-required'
+    return completeAuthenticatedProfile(values.username)
+  }
+
+  const requestAccountUpgrade = async (email: string, password: string): Promise<AccountUpgradeResult> => {
+    const result = await upgradeAnonymousAccount(email, password)
+    if (result === 'complete') {
+      const profile = await restoreDemoProfile()
+      if (profile) {
+        await syncOwnedProfileIdentity()
+        restoreRequest.current += 1
+        applyProfile(profile)
+      }
+    }
+    return result
+  }
+
+  const finishAccountUpgrade = async (password: string) => {
+    await finishAnonymousAccountUpgrade(password)
+    await syncOwnedProfileIdentity()
+    const profile = await restoreDemoProfile()
+    if (profile) {
+      restoreRequest.current += 1
+      applyProfile(profile)
+    }
+  }
+
+  const completeDemoQuestionnaire = async (answers: MealPreferences) => {
+    if (!demoProfile) throw new Error('No demo profile is selected.')
+    await submitDemoPreferences(demoProfile.id, answers)
     setCompletedAnswers(answers)
     setIsQuestionnaireComplete(true)
   }
 
-  if (completionState === 'loading') return <StatusScreen title="Loading your account…" />
-  if (completionState === 'error') {
-    return <StatusScreen title="We could not load your questionnaire status." detail={completionError} action={<button type="button" onClick={() => setRetry((value) => value + 1)}>Retry</button>} />
+  const resetDemo = async () => {
+    restoreRequest.current += 1
+    activeAuthUserId.current = null
+    if (demoProfile) clearDraft(demoDraftScope(demoProfile.id))
+    try {
+      await signOutDemo()
+    } finally {
+      setDemoProfile(null)
+      setCompletedAnswers(null)
+      setIsQuestionnaireComplete(false)
+      setRestoreError('')
+      setRestoreState('ready')
+    }
   }
-  if (!authenticatedUser) return <StatusScreen title="Sign in is required." detail="Sign in and retry to continue." />
+
+  if (restoreState === 'loading') return <StatusScreen title="Restoring your demo profile…" />
+  if (restoreState === 'error') {
+    return <StatusScreen title="We could not restore your demo profile." detail={restoreError} action={<button type="button" onClick={() => void restore()}>Retry</button>} />
+  }
+  if (!demoProfile) return <DemoSignin onContinue={beginDemo} onSignIn={handleSignIn} onSignUp={handleSignUp} />
   if (!isQuestionnaireComplete) {
-    return <Questionnaire key={authenticatedUser.id} draftScope={authenticatedUser.id} onComplete={completeQuestionnaire} />
+    return <><AccountUpgradePanel profile={demoProfile} onRequest={requestAccountUpgrade} onFinish={finishAccountUpgrade} /><Questionnaire key={demoProfile.id} draftScope={demoDraftScope(demoProfile.id)} onComplete={completeDemoQuestionnaire} /></>
   }
 
   return (
     <div className="main-app-root">
+      <AccountUpgradePanel profile={demoProfile} onRequest={requestAccountUpgrade} onFinish={finishAccountUpgrade} />
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/" element={<Dashboard onResetDemo={() => void resetDemo()} />} />
+        <Route path="/Dashboard" element={<Dashboard onResetDemo={() => void resetDemo()} />} />
         <Route path="/User-Profile" element={<User_Info answers={completedAnswers} />} />
         <Route path="/Notifications" element={<Notifications />} />
         <Route path="/Settings" element={<Settings />} />
@@ -117,11 +198,16 @@ function App() {
   )
 }
 
+function AccountUpgradePanel({ profile, onRequest, onFinish }: { profile: DemoProfile; onRequest: (email: string, password: string) => Promise<AccountUpgradeResult>; onFinish: (password: string) => Promise<void> }) {
+  if (!profile.is_anonymous && !profile.upgrade_pending) return null
+  return <AccountUpgrade onRequest={onRequest} onFinish={onFinish} />
+}
+
 function StatusScreen({ title, detail, action }: { title: string; detail?: string; action?: ReactNode }) {
   return <main className="status-screen"><h1>{title}</h1>{detail && <p>{detail}</p>}{action}</main>
 }
 
-function Dashboard() {
+function Dashboard({ onResetDemo }: { onResetDemo: () => void }) {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<string>(() => localStorage.getItem('activeTab') || 'stats')
 
@@ -136,6 +222,7 @@ function Dashboard() {
             <button aria-label="Notifications" onClick={() => navigate('/Notifications')}>Notifications</button>
             <button aria-label="Settings" onClick={() => navigate('/Settings')}>Settings</button>
             <button aria-label="Profile" onClick={() => navigate('/User-Profile')}>Profile</button>
+            <button type="button" onClick={onResetDemo}>Reset demo</button>
           </div>
           <div className="recipe-search-container">
             <form className="recipe-search" role="search">
