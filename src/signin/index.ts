@@ -1,0 +1,8 @@
+export { AppGate } from './AppGate'
+export { DemoSignin } from './DemoSignin'
+export { AccountUpgrade } from './AccountUpgrade'
+export { restoreDemoProfile, selectDemoProfile, signOutDemo, syncOwnedProfileIdentity } from './profileService'
+export type { DemoProfile } from './profileService'
+export { finishAnonymousAccountUpgrade, getCurrentAuthUser, hasPendingAccountUpgrade, signInWithPassword, signUpWithPassword, upgradeAnonymousAccount } from './authService'
+export type { AccountUpgradeResult, AuthFlowResult, SignInValues, SignUpValues } from './types'
+export { normalizeUsername, validateEmail, validatePassword, validatePasswordConfirmation, validateUsername } from './validation'

@@ -32,6 +32,11 @@ function Search_Engine() {
     // Fetch recipes from Supabase once, when the component mounts
     useEffect(() => {
         async function fetchRecipes() {
+            if (!supabase) {
+                setError('Supabase is not configured.');
+                setLoading(false);
+                return;
+            }
             const { data, error } = await supabase
                 .from('Recipe')
                 .select('id, Name, Link, "Diet type", "Meal Type", Cuisine, Ingredients, Time');
