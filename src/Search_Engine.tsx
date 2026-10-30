@@ -33,7 +33,7 @@ function Search_Engine() {
     useEffect(() => {
         async function fetchRecipes() {
             const { data, error } = await supabase
-                .from('Recipe')
+                .from('recipe')
                 .select('id, Name, Link, "Diet type", "Meal Type", Cuisine, Ingredients, Time');
 
             if (error) {
