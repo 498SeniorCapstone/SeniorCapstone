@@ -29,6 +29,8 @@ function App() {
 
           <section id="calendar" className="widget">
             <h2 onClick={() => navigate('/Calendar')}>Calendar</h2>
+             <h3>Recipes for this Week:</h3>
+
           </section>
 
           <section id="my-recipes" className="widget">

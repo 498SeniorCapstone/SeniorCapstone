@@ -38,7 +38,7 @@ function Search_Engine() {
                 return;
             }
             const { data, error } = await supabase
-                .from('Recipe')
+                .from('recipe')
                 .select('id, Name, Link, "Diet type", "Meal Type", Cuisine, Ingredients, Time');
 
             if (error) {
