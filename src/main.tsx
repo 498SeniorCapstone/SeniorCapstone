@@ -2,6 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 //import './index.css'
 import App from './App.tsx'
+// AppGate adds the feature entry flow around these existing routes without
+// moving route ownership out of this application entry point.
 import { AppGate } from './signin'
 import {HashRouter, Route, Routes} from "react-router-dom";
 import User_Info from "./User_Info/User_Info.tsx";
@@ -19,6 +21,8 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HashRouter>
       <Routes>
+        {/* Restore/sign-in/questionnaire first; successful profiles render the
+            unchanged route tree through AppGate's Outlet. */}
         <Route element={<AppGate />}>
           <Route path="/" element={<App />} />
           <Route path="/Dashboard" element={<App />} />

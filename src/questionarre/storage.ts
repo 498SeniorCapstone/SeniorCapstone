@@ -1,7 +1,9 @@
-import { DRAFT_KEY, initialAnswers, TOTAL_STEPS } from './types'
-import type { MealPreferences } from './types'
+import { DRAFT_KEY, initialAnswers } from './types'
+import type { MealPreferences, StepId } from './types'
+import { QUESTIONNAIRE_STEPS } from './steps/stepDefinitions'
+import { stepIdAt } from './steps/navigation'
 
-interface DraftPayload { version: number; answers: unknown; step: number }
+interface DraftPayload { version: number; answers: unknown; step?: number; stepId?: unknown }
 
 function draftKey(userId: string) { return `${DRAFT_KEY}:${userId}` }
 
@@ -45,24 +47,35 @@ export function restoreDraft(userId: string) {
   try {
     const key = draftKey(userId)
     const raw = sessionStorage.getItem(key)
-    if (!raw) return { answers: initialAnswers, step: 1 }
+    if (!raw) return { answers: initialAnswers, stepId: QUESTIONNAIRE_STEPS[0].id }
     const parsed = JSON.parse(raw) as DraftPayload
     const answers = normalizeAnswers(parsed.answers)
-    const hadBudgetStep = Boolean(parsed.answers && typeof parsed.answers === 'object' && 'weeklyBudget' in parsed.answers)
-    const step = hadBudgetStep && parsed.step >= 5 ? parsed.step - 1 : parsed.step
-    if (![2, 3, 4].includes(parsed.version) || !answers || !Number.isInteger(step) || step < 1 || step > TOTAL_STEPS) {
+    // New drafts use stable IDs. Older numeric drafts are translated here,
+    // including the removed budget-step offset, before the UI sees them.
+    const stepId = typeof parsed.stepId === 'string' && QUESTIONNAIRE_STEPS.some(step => step.id === parsed.stepId)
+      ? parsed.stepId as StepId
+      : legacyStepId(parsed)
+    if (![2, 3, 4, 5].includes(parsed.version) || !answers || !stepId) {
       sessionStorage.removeItem(key)
-      return { answers: initialAnswers, step: 1 }
+      return { answers: initialAnswers, stepId: QUESTIONNAIRE_STEPS[0].id }
     }
-    return { answers, step }
+    return { answers, stepId }
   } catch {
     try { sessionStorage.removeItem(draftKey(userId)) } catch { /* storage can be unavailable */ }
-    return { answers: initialAnswers, step: 1 }
+    return { answers: initialAnswers, stepId: QUESTIONNAIRE_STEPS[0].id }
   }
 }
 
-export function saveDraft(userId: string, answers: MealPreferences, step: number) {
-  try { sessionStorage.setItem(draftKey(userId), JSON.stringify({ version: 4, answers, step })) } catch { /* storage can be unavailable */ }
+function legacyStepId(payload: DraftPayload): StepId | null {
+  if (!Number.isInteger(payload.step)) return null
+  const hadBudgetStep = Boolean(payload.answers && typeof payload.answers === 'object' && 'weeklyBudget' in payload.answers)
+  const currentStep = hadBudgetStep && payload.step! >= 5 ? payload.step! - 1 : payload.step!
+  if (currentStep < 1 || currentStep > QUESTIONNAIRE_STEPS.length) return null
+  return stepIdAt(currentStep - 1)
+}
+
+export function saveDraft(userId: string, answers: MealPreferences, stepId: StepId) {
+  try { sessionStorage.setItem(draftKey(userId), JSON.stringify({ version: 5, answers, stepId })) } catch { /* storage can be unavailable */ }
 }
 
 export function clearDraft(userId: string) {

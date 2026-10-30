@@ -19,10 +19,19 @@ function demoDraftScope(profileId: number) {
 type RestoreState = 'loading' | 'ready' | 'error'
 
 export function AppGate() {
+  // The gate has four visible stages: restore the session, show sign-in when
+  // no owned profile is available, show the questionnaire while incomplete,
+  // then render the existing application routes through Outlet.
   const [demoProfile, setDemoProfile] = useState<DemoProfile | null>(null)
+  // demoProfile is the row owned by the current Auth UUID. Completion comes
+  // from public.users.questionnare_completed, not from browser state.
   const [isQuestionnaireComplete, setIsQuestionnaireComplete] = useState(false)
+  // loading prevents a sign-in flash during refresh; error keeps real network
+  // or configuration failures visible instead of treating them as sign-out.
   const [restoreState, setRestoreState] = useState<RestoreState>('loading')
   const [restoreError, setRestoreError] = useState('')
+  // Each restore gets a number. An older request cannot overwrite state after
+  // sign-out, reset, or a different Auth account becomes active.
   const restoreRequest = useRef(0)
   const activeAuthUserId = useRef<string | null>(null)
 
@@ -53,6 +62,8 @@ export function AppGate() {
   }, [applyProfile])
 
   useEffect(() => {
+    // Supabase persists the session. We only restore it here; anonymous
+    // accounts are created after the user explicitly continues on sign-in.
     queueMicrotask(() => void restore())
   }, [restore])
 
@@ -140,6 +151,8 @@ export function AppGate() {
 
   const completeDemoQuestionnaire = async (answers: MealPreferences) => {
     if (!demoProfile) throw new Error('No demo profile is selected.')
+    // The service maps answers, verifies the owned row, and marks completion
+    // only after the save succeeds. Questionnaire clears its draft afterward.
     await submitDemoPreferences(demoProfile.id, answers)
     setIsQuestionnaireComplete(true)
   }

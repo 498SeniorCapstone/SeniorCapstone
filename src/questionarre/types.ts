@@ -1,5 +1,6 @@
 export type WeightUnit = 'kg' | 'lb'
 export type HeightUnit = 'cm' | 'ft'
+export type StepId = 'about-you' | 'goals' | 'dietary-needs' | 'cooking-schedule' | 'foods-to-skip' | 'kitchen' | 'obstacles'
 
 export interface MealPreferences {
   age: string
@@ -23,7 +24,6 @@ export interface MealPreferences {
 
 export type FormErrors = Record<string, string>
 
-export const TOTAL_STEPS = 7
 export const DRAFT_KEY = 'meal-preferences-questionnaire-draft'
 export const initialAnswers: MealPreferences = {
   age: '', weight: '', weightUnit: 'kg', height: '', heightUnit: 'cm', heightInches: '',

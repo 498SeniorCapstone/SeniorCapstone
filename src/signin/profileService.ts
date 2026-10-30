@@ -35,6 +35,8 @@ async function createAnonymousSession() {
 }
 
 async function loadOwnedProfile(client: NonNullable<typeof supabase>, user: { id: string; is_anonymous?: boolean }): Promise<DemoProfile | null> {
+  // A username is display data, not proof of identity. Every profile read is
+  // scoped to the current Supabase Auth UUID and is protected by RLS.
   const { data, error } = await client
     .from('users')
     .select('id, username, display_name, auth_user_id, questionnare_completed')
@@ -63,6 +65,8 @@ export async function selectDemoProfile(displayName: string): Promise<DemoProfil
   const user = current.user ?? (await createAnonymousSession()).user
   const normalizedDisplayName = displayName.trim()
   const normalizedUsername = normalizeUsername(normalizedDisplayName)
+  // Reuse only the profile owned by this session; never claim another row by
+  // matching its username or email.
   const existing = await loadOwnedProfile(client, user)
   if (existing) return existing
 

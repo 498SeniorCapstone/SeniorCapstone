@@ -68,6 +68,8 @@ export const DEMO_ANSWER_STORAGE_GAPS = [
 
 export async function submitDemoPreferences(profileId: number, answers: MealPreferences) {
   const { client, user } = await getAuthenticatedUser()
+  // The Auth UUID is the ownership boundary; the bigint profile id is only
+  // accepted when both identifiers match the same public.users row.
   const appliances = [...answers.equipment, ...(answers.otherEquipment.trim() ? [answers.otherEquipment.trim()] : [])]
   const goals = answers.goals.map(goal => goal.trim()).filter(Boolean)
   const update = {
