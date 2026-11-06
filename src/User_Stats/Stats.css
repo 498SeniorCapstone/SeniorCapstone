@@ -43,3 +43,16 @@
   font-weight: bold;
   margin-top: 6px;
 }
+.stats-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+}
+
+.stats-tags li {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #eef2f7;
+}
