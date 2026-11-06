@@ -159,32 +159,32 @@ function Search_Engine() {
                 )}
             </div>
             {recipeToSave && (
-                                <div className="modal-overlay" onClick={closeSaveModal}>
-                                    <div className="modal" onClick={(e) => e.stopPropagation()}>
-                                        <h3>Save "{recipeToSave.Name}"</h3>
+                <div className="modal-overlay" onClick={closeSaveModal}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                        <h3>Save "{recipeToSave.Name}"</h3>
 
-                                        <label htmlFor="status-select">Status</label>
-                                        <select
-                                            id="status-select"
-                                            value={status}
-                                            onChange={(e) => setStatus(e.target.value as Status)}
-                                        >
-                                            {status_options.map((s) => (
-                                                <option key={s} value={s}>{s}</option>
-                                            ))}
-                                        </select>
+                        <label htmlFor="status-select">Status</label>
+                        <select
+                            id="status-select"
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value as Status)}
+                        >
+                            {status_options.map((s) => (
+                                <option key={s} value={s}>{s}</option>
+                            ))}
+                        </select>
 
-                                        {saveError && <p className="modal-error">{saveError}</p>}
+                        {saveError && <p className="modal-error">{saveError}</p>}
 
-                                        <div className="modal-actions">
-                                            <button onClick={closeSaveModal} disabled={saving}>Cancel</button>
-                                            <button onClick={handleSaveRecipe} disabled={saving}>
-                                                {saving ? 'Saving...' : 'Save'}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+                        <div className="modal-actions">
+                            <button onClick={closeSaveModal} disabled={saving}>Cancel</button>
+                            <button onClick={handleSaveRecipe} disabled={saving}>
+                                {saving ? 'Saving...' : 'Save'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
