@@ -3,20 +3,6 @@ import { useState, useEffect } from "react";
 import {  useNavigate } from "react-router-dom";
 import { supabase } from './lib/supabase.ts';
 
-type Recipe = {
-    id: number;                       
-    created_at?: string;                
-    Name: string | null;
-    Link: string | null;
-    'Diet type': string[] | null;
-    'Meal Type': string | null;
-    Symbols: number[] | null;
-    'Kitchen Appliances': string[] | null;
-    Cuisine: string | null;
-    Nutrition: number[] | null;       
-    Ingredients: string[] | null;
-    Time: number | null;
-}; 
 
 type UserRecipe = {
     recipe_id: number;
@@ -28,7 +14,6 @@ function App() {
   //navigation
   const navigate = useNavigate();
 
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [userRecipes, setUserRecipes] = useState<UserRecipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,29 +37,7 @@ function App() {
           setLoading(false);
       }
       fetchUserRecipes();
-      }, []);
-  
-      //all recipes
-       useEffect(() => {
-              async function fetchRecipes() {
-                  if (!supabase) {
-                      setError('Supabase is not configured.');
-                      setLoading(false);
-                      return;
-                  }
-                  const { data, error } = await supabase
-                      .from('recipe')
-                      .select('id, Name, Link, "Diet type", "Meal Type", Cuisine, Ingredients, Time');
-      
-                  if (error) {
-                      setError(error.message);
-                  } else {
-                      setRecipes((data as Recipe[]) ?? []);
-                  }
-                  setLoading(false);
-              }
-              fetchRecipes();
-          }, []);
+    }, []);
 
   const plannedRecipes = userRecipes.filter((userRecipe) => userRecipe.status === 'plan to try');
   const wantToTryRecipes = userRecipes.filter((userRecipe) => userRecipe.status === 'want to try');
@@ -82,6 +45,8 @@ function App() {
 
   return (
     <div className="Dashboard">
+       {loading && <p>Loading...</p>}
+        {error && <p>Error: {error}</p>}
       <div className="site-header-container">
           <header className="site-header">
           <a className="site-name">Website Name</a>
@@ -130,12 +95,7 @@ function App() {
           </section>
         </div>
       </main> 
-      
-
     </div>
-
-
-
   )
 }
 
