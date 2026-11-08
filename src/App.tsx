@@ -34,7 +34,10 @@ function App() {
           </section>
 
           <section id="my-recipes" className="widget">
-            <h2 onClick={() => navigate('/My-Recipes')}>My Recipes</h2>
+            <h2 >My Recipes</h2>
+            <p onClick={() => navigate('/My-Recipes/want-to-try')}>Want to Try</p>
+            <p onClick={() => navigate('/My-Recipes/plan-to-try')}>Plan to Try</p>
+            <p onClick={() => navigate('/My-Recipes/tried')}>Tried</p>
           </section>
 
           <section id="shopping-list" className="widget">
