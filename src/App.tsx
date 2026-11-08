@@ -1,13 +1,52 @@
 import './App.css'
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import {  useNavigate } from "react-router-dom";
+import { supabase } from './lib/supabase.ts';
+
+
+type UserRecipe = {
+    recipe_id: number;
+    status: string;
+};
 
 function App() {
 
   //navigation
   const navigate = useNavigate();
 
+  const [userRecipes, setUserRecipes] = useState<UserRecipe[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+   useEffect(() => {
+      async function fetchUserRecipes() {
+          if (!supabase) {
+              setError('Supabase is not configured.');
+              setLoading(false);
+              return;
+          }
+          const { data, error } = await supabase
+              .from('my_recipes')
+              .select('recipe_id, status');
+  
+          if (error) {
+              setError(error.message);
+          } else {
+              setUserRecipes((data as UserRecipe[]) ?? []);
+          }
+          setLoading(false);
+      }
+      fetchUserRecipes();
+    }, []);
+
+  const plannedRecipes = userRecipes.filter((userRecipe) => userRecipe.status === 'plan to try');
+  const wantToTryRecipes = userRecipes.filter((userRecipe) => userRecipe.status === 'want to try');
+  const triedRecipes = userRecipes.filter((userRecipe) => userRecipe.status === 'tried');
+
   return (
     <div className="Dashboard">
+       {loading && <p>Loading...</p>}
+        {error && <p>Error: {error}</p>}
       <div className="site-header-container">
           <header className="site-header">
           <a className="site-name">Website Name</a>
@@ -34,7 +73,21 @@ function App() {
           </section>
 
           <section id="my-recipes" className="widget">
-            <h2 onClick={() => navigate('/My-Recipes')}>My Recipes</h2>
+            <h2 >My Recipes</h2>
+            <div className="recipe-categories">
+              <div className="category-item">
+                <h3 onClick={() => navigate('/My-Recipes/want-to-try')}>Want to Try</h3>
+                <p>{wantToTryRecipes.length}</p>
+              </div>
+              <div className="category-item">
+                <h3 onClick={() => navigate('/My-Recipes/plan-to-try')}>Plan to Try</h3>
+                <p>{plannedRecipes.length}</p>
+              </div>
+              <div className="category-item">
+                <h3 onClick={() => navigate('/My-Recipes/tried')}>Tried</h3>
+                <p>{triedRecipes.length}</p>
+              </div>
+            </div>
           </section>
 
           <section id="shopping-list" className="widget">
@@ -42,12 +95,7 @@ function App() {
           </section>
         </div>
       </main> 
-      
-
     </div>
-
-
-
   )
 }
 
