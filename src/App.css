@@ -344,3 +344,16 @@ html{
   text-align: center;       /* Centers the text inside each column */
   cursor: pointer;          /* Gives a pointer hand icon on hover */
 }
+
+.button {
+  background-color:--color-header;
+  border: none;
+  color: --color-bg;
+  font-family: 'Inter', sans-serif;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+}
