@@ -47,34 +47,31 @@ function App() {
     <div className="Dashboard">
        {loading && <p>Loading...</p>}
         {error && <p>Error: {error}</p>}
-      <div className="site-header-container">
-          <header className="site-header">
-          <a className="site-name">Website Name</a>
-          <div className="header-actions">
+      <header className="site-header-container">
+        <h1 className="site-name">Apptrition</h1>
+        <nav className="header-actions">
             <button aria-label="Notifications" onClick={() => navigate('/Notifications')}>Notifications</button>
             <button aria-label="Settings" onClick={() => navigate('/Settings')}>Settings</button>
             <button aria-label="Profile" onClick={() => navigate('/User-Profile')}>Profile</button>
-          </div> 
-        </header>
-      </div>
+          </nav>
+      </header>
 
       <main>
-        <h1 onClick={() => navigate('/Search')}>Discover Recipes!</h1>
-
+        <button onClick={() => navigate('/Search')}>Discover Recipes!</button>
         <div className="widget-grid" id="widget-grid">
           <section id="stats" className="widget">
-            <h2 onClick={() => navigate('/Stats')}>User Stats</h2>
+            <button onClick={() => navigate('/Stats')}>User Stats</button>
           </section>
 
           <section id="calendar" className="widget">
-            <h2 onClick={() => navigate('/Calendar')}>Calendar</h2>
+            <button onClick={() => navigate('/Calendar')}>Calendar</button>
              <h3>Recipes for this Week:</h3>
 
           </section>
 
           <section id="my-recipes" className="widget">
-            <h2 >My Recipes</h2>
-            <div className="recipe-categories">
+            <button onClick={() => navigate('/My-Recipes')}>My Recipes</button>
+            {/* <div className="recipe-categories">
               <div className="category-item">
                 <h3 onClick={() => navigate('/My-Recipes/want-to-try')}>Want to Try</h3>
                 <p>{wantToTryRecipes.length}</p>
@@ -87,11 +84,27 @@ function App() {
                 <h3 onClick={() => navigate('/My-Recipes/tried')}>Tried</h3>
                 <p>{triedRecipes.length}</p>
               </div>
+            </div> 
+            wanted to make my recipes uniform to the other widgets
+            */}
+            <div className="recipe-categories">
+              <div className="category-item">
+                <h3>Want to Try</h3>
+                <p>{wantToTryRecipes.length}</p>
+              </div>
+              <div className="category-item">
+                <h3>Plan to Try</h3>
+                <p>{plannedRecipes.length}</p>
+              </div>
+              <div className="category-item">
+                <h3>Tried</h3>
+                <p>{triedRecipes.length}</p>
+              </div>
             </div>
           </section>
 
           <section id="shopping-list" className="widget">
-            <h2 onClick={() => navigate('/Shopping-List')}>Shopping List</h2>
+            <button onClick={() => navigate('/Shopping-List')}>Shopping List</button>
           </section>
         </div>
       </main> 
