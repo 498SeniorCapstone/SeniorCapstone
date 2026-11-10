@@ -50,9 +50,15 @@ function App() {
       <header className="site-header-container">
         <h1 className="site-name">Apptrition</h1>
         <nav className="header-actions">
-            <button aria-label="Notifications" onClick={() => navigate('/Notifications')}>Notifications</button>
-            <button aria-label="Settings" onClick={() => navigate('/Settings')}>Settings</button>
-            <button aria-label="Profile" onClick={() => navigate('/User-Profile')}>Profile</button>
+            <button aria-label="Notifications" onClick={() => navigate('/Notifications')}>
+              <img src="\src\assets\Apptrition_Notifications.png" alt="Notifications" />
+            </button>
+            <button aria-label="Settings" onClick={() => navigate('/Settings')}>
+              <img src="\src\assets\Apptrition_Settings.png" alt="Settings" />
+            </button>
+            <button aria-label="Profile" onClick={() => navigate('/User-Profile')}>
+              <img src="\src\assets\Apptrition_Profile.png" alt="Profile" />
+            </button>
           </nav>
       </header>
 
