@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import type { ReactNode } from 'react'
+import type { FormEvent, KeyboardEvent, ReactNode } from 'react'
 import { clearDraft, restoreDraft, saveDraft } from './storage'
 import { QUESTIONNAIRE_STEPS } from './steps/stepDefinitions'
 import { stepIndex } from './steps/navigation'
 import type { StepRenderProps } from './steps/stepDefinitions'
-import type { FormErrors, MealPreferences } from './types'
+import type { FormErrors, MealPreferences, StepId } from './types'
 
 export interface QuestionnaireProps {
   onComplete: (answers: MealPreferences) => Promise<void>
@@ -27,6 +27,8 @@ export function Questionnaire({ onComplete, draftScope }: QuestionnaireProps) {
   const firstInvalidRef = useRef<HTMLElement | null>(null)
   const step = QUESTIONNAIRE_STEPS[stepIndex(stepId)]
   const stepNumber = stepIndex(stepId) + 1
+  const finalStep = QUESTIONNAIRE_STEPS[QUESTIONNAIRE_STEPS.length - 1]
+  const isFinalStep = stepId === finalStep.id
 
   useEffect(() => { headingRef.current?.focus() }, [stepId])
   useEffect(() => { saveDraft(draftScope, answers, stepId) }, [answers, draftScope, stepId])
@@ -57,7 +59,7 @@ export function Questionnaire({ onComplete, draftScope }: QuestionnaireProps) {
     setFoodDraft('')
   }
 
-  const goTo = (nextStepId: typeof stepId) => {
+  const goTo = (nextStepId: StepId) => {
     setStepId(nextStepId)
     setErrors({})
     setSubmissionError('')
@@ -96,16 +98,30 @@ export function Questionnaire({ onComplete, draftScope }: QuestionnaireProps) {
     }
   }
 
+  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
+    // Submission is intentionally click-only. This prevents implicit Enter
+    // submits and prevents a Continue click from becoming Finish after React
+    // advances the step.
+    event.preventDefault()
+  }
+
+  const handleFormKeyDown = (event: KeyboardEvent<HTMLFormElement>) => {
+    if (event.key !== 'Enter' || event.defaultPrevented) return
+    if (event.target instanceof HTMLTextAreaElement) return
+    if (event.target instanceof HTMLInputElement && event.target.id === 'food-draft') return
+    event.preventDefault()
+  }
+
   const renderProps: StepRenderProps = { answers, errors, foodDraft, setFoodDraft, update, toggle, addFood, firstInvalidRef }
   return <main className="questionnaire-root app-shell">
     <div className="progress-wrap" aria-label={`Step ${stepNumber} of ${QUESTIONNAIRE_STEPS.length}`}>
       <div className="progress-meta"><span className="progress-label"><span className="pizza-icon" aria-hidden="true" />Progress</span><span>{stepNumber} / {QUESTIONNAIRE_STEPS.length}</span></div>
       <div className="progress-track">{QUESTIONNAIRE_STEPS.map((item, index) => <span className={`progress-segment ${index < stepNumber ? 'filled' : ''}`} key={item.id} />)}</div>
     </div>
-    <form className="questionnaire" onSubmit={event => { event.preventDefault(); if (stepNumber === QUESTIONNAIRE_STEPS.length) void finish() }} noValidate>
+    <form className="questionnaire" onSubmit={handleFormSubmit} onKeyDown={handleFormKeyDown} noValidate>
       <Step title={step.title} intro={step.intro} headingRef={headingRef}>{step.render(renderProps)}</Step>
       {submissionError && <Error>{submissionError}</Error>}
-      <div className="form-actions">{stepNumber > 1 && <button type="button" className="button secondary" onClick={() => goTo(QUESTIONNAIRE_STEPS[stepIndex(stepId) - 1].id)} disabled={submitting}>Back</button>}{stepNumber < QUESTIONNAIRE_STEPS.length ? <button type="button" className="button primary" onClick={continueStep}>Continue</button> : <button type="submit" className="button primary" disabled={submitting}>{submitting ? 'Submitting...' : "Let's go"}</button>}</div>
+      <div className="form-actions">{stepNumber > 1 && <button type="button" className="button secondary" onClick={() => goTo(QUESTIONNAIRE_STEPS[stepIndex(stepId) - 1].id)} disabled={submitting}>Back</button>}{!isFinalStep ? <button type="button" className="button primary" onClick={continueStep}>Continue</button> : <button type="button" className="button primary" onClick={() => void finish()} disabled={submitting}>{submitting ? 'Submitting...' : "Let's go"}</button>}</div>
     </form>
   </main>
 }
