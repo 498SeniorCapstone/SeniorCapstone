@@ -13,6 +13,7 @@ export function TemporaryProgrammaticShoppingListDemo() {
 
     hasInitialized.current = true;
     const tomatoId = api.add({ name: 'Tomatoes' });
+    api.change(tomatoId, {name : 'Orange'});
     api.remove(tomatoId);
   }, [api]);
 
