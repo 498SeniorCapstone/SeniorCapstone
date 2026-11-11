@@ -34,6 +34,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/Discover" element={<Discover />} />
           <Route path="/Shopping-List" element={<Shopping_List />} />
           <Route path="/My-Recipes" element={<My_Recipes />} />
+          <Route path="/My-Recipes/:category" element={<My_Recipes />} />
+   
           <Route path="/Search" element={<Search_Engine />} />
         </Route>
       </Routes>

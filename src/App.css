@@ -332,4 +332,28 @@ html{
   background: rgba(255,255,255, 0.12);
 }
 
+.recipe-categories {
+  display: flex;            /* Aligns items side-by-side */
+  flex-direction: row;      /* Ensures they go left-to-right */
+  justify-content: space-between; /* Adds spacing between columns */
+  gap: 20px;                /* Controls the exact gap size between columns */
+}
 
+.category-item {
+  flex: 1;                  /* Makes all columns equal width */
+  text-align: center;       /* Centers the text inside each column */
+  cursor: pointer;          /* Gives a pointer hand icon on hover */
+}
+
+.button {
+  background-color:--color-header;
+  border: none;
+  color: --color-bg;
+  font-family: 'Inter', sans-serif;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+}

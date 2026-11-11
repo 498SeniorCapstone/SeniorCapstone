@@ -71,6 +71,45 @@ function Search_Engine() {
         );
     }, [recipes, debouncedSearchTerm]);
 
+
+    //saving recipes
+    const status_options = ['want to try', 'plan to try', 'tried'];
+    type Status = typeof status_options[number];
+
+    const [recipeToSave, setRecipeToSave] = useState<Recipe |null>(null);
+    const [status, setStatus] = useState<Status>('want to try');
+    const [saving, setSaving] = useState<boolean>(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
+
+    const openSaveModal = (recipe: Recipe) => {
+        setRecipeToSave(recipe);
+        setStatus('want to try');
+        setSaveError(null);
+    }
+
+    const closeSaveModal = () => setRecipeToSave(null);
+
+    const handleSaveRecipe = async () => {
+        if (!supabase || !recipeToSave) return;
+
+        setSaving(true);
+        setSaveError(null);
+
+        const { error } = await supabase.rpc('save_recipe', {
+            p_recipe_id: recipeToSave.id,
+            p_status: status,
+        });
+
+        setSaving(false);
+        if (error) {
+            setSaveError(error.message);
+        }
+        else{
+            closeSaveModal()
+        }
+    }
+
+
   return (
         <div>
             <div className="search-header-container">
@@ -101,6 +140,7 @@ function Search_Engine() {
                         <div key={item.id} className="result-item">
                             <div className="result-item-content">
                                 <h2>{item.Name}</h2>
+                                <button onClick={() => openSaveModal(item)}>Save</button>
                             <p>
                                 {[item.Cuisine, item['Meal Type'], item.Time ? `${item.Time} min` : null]
                                     .filter(Boolean)
@@ -115,9 +155,36 @@ function Search_Engine() {
                         </div>
                     ))
                 ) : (
-                    <p>No recipes found.</p>
+                    <p>Recipes will appear here.</p>
                 )}
             </div>
+            {recipeToSave && (
+                <div className="modal-overlay" onClick={closeSaveModal}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                        <h3>Save "{recipeToSave.Name}"</h3>
+
+                        <label htmlFor="status-select">Status</label>
+                        <select
+                            id="status-select"
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value as Status)}
+                        >
+                            {status_options.map((s) => (
+                                <option key={s} value={s}>{s}</option>
+                            ))}
+                        </select>
+
+                        {saveError && <p className="modal-error">{saveError}</p>}
+
+                        <div className="modal-actions">
+                            <button onClick={closeSaveModal} disabled={saving}>Cancel</button>
+                            <button onClick={handleSaveRecipe} disabled={saving}>
+                                {saving ? 'Saving...' : 'Save'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

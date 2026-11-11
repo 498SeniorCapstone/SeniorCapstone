@@ -38,7 +38,7 @@ function ShoppingListContent() {
   };
 
   return <main className="shopping-list-feature">
-    <div className="shopping-list-topbar"><div><p className="shopping-list-eyebrow">Kitchen planning</p><h1>Shopping lists</h1></div><button type="button" className="shopping-list-back" onClick={() => navigate('/Dashboard')}>Back to Dashboard</button></div>
+    <div className="shopping-list-topbar"><div><h1>Shopping list</h1></div><button type="button" className="shopping-list-back" onClick={() => navigate('/Dashboard')}>Back to Dashboard</button></div>
     <div className="shopping-list-grid">
       <ShoppingList title="My shopping list" description="Add the ingredients you want to remember." items={manualItems} editable feedback={feedback} onAdd={addManualItem} onToggle={(id, checked) => updateManualItem(id, { checked })} onChange={(id, name) => updateManualItem(id, { name })} onRemove={(id) => setManualItems((items) => items.filter((item) => item.id !== id))} />
       <ShoppingList title="Meal plan shopping list" description="Ingredients from future meal-plan features will appear here." items={mealPlanItems} onToggle={updateMealPlanItem} />
