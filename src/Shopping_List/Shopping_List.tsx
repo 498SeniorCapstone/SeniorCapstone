@@ -1,8 +1,13 @@
+import SubpageHeader from "../subpage header/SubpageHeader"
+
+
 function Shopping_List() {
 
   return (
     <>
-      <div>This is shopping list</div>
+      <SubpageHeader title="Shopping List" />
+      <main className="shopping-list-body"></main>
+
     </>
   )
 }
