@@ -22,7 +22,7 @@ export interface StepDefinition {
   validate: (answers: MealPreferences) => FormErrors
 }
 
-const goals = ['Quick and easy', 'High protein', 'Healthy comfort food', 'Family favorites', 'Low calorie', 'Gut friendly', 'Fakeaway']
+const goals = ['Quick and easy', 'High protein', 'Healthy comfort food', 'Family favorites', 'Low calorie', 'Gut friendly', 'Take out']
 const dietary = ['None', 'Vegetarian', 'Vegan', 'Pescatarian', 'Gluten free', 'Dairy free', 'Nut free']
 const equipment = ['Hob/stovetop', 'Oven', 'Microwave', 'Air fryer', 'Slow cooker', 'Pressure cooker', 'Blender']
 const obstacles = ['Not enough time', 'Not sure what to cook', 'Food costs', 'Limited cooking confidence', 'Hard to stay consistent', 'Different preferences at home', 'Other']
