@@ -50,14 +50,14 @@ function App() {
       <header className="site-header-container">
         <h1 className="site-name">Apptrition</h1>
         <nav className="header-actions">
-            <button aria-label="Notifications" onClick={() => navigate('/Notifications')}>
-              <img src="\src\assets\Apptrition_Notifications.png" alt="Notifications" />
+            <button className="icon"aria-label="Notifications" onClick={() => navigate('/Notifications')}>
+              <img src="src\assets\Apptrition_Notification_Button.png" alt="Notifications" />
             </button>
-            <button aria-label="Settings" onClick={() => navigate('/Settings')}>
-              <img src="\src\assets\Apptrition_Settings.png" alt="Settings" />
+            <button className="icon" aria-label="Settings" onClick={() => navigate('/Settings')}>
+              <img src="src\assets\Apptrition_Settings_Button.png" alt="Settings" />
             </button>
-            <button aria-label="Profile" onClick={() => navigate('/User-Profile')}>
-              <img src="\src\assets\Apptrition_Profile.png" alt="Profile" />
+            <button className="icon" aria-label="Profile" onClick={() => navigate('/User-Profile')}>
+              {/*<img src="src\assets\Apptrition_Profile.png" alt="Profile" />*/}
             </button>
           </nav>
       </header>
@@ -66,11 +66,11 @@ function App() {
         <button onClick={() => navigate('/Search')}>Discover Recipes!</button>
         <div className="widget-grid" id="widget-grid">
           <section id="stats" className="widget">
-            <button onClick={() => navigate('/Stats')}>User Stats</button>
+            <a onClick={() => navigate('/Stats')}>User Stats</a>
           </section>
 
           <section id="calendar" className="widget">
-            <button onClick={() => navigate('/Calendar')}>Calendar</button>
+            <a onClick={() => navigate('/Calendar')}>Calendar</a>
              <h3>Recipes for this Week:</h3>
 
           </section>
@@ -110,7 +110,7 @@ function App() {
           </section>
 
           <section id="shopping-list" className="widget">
-            <button onClick={() => navigate('/Shopping-List')}>Shopping List</button>
+            <a onClick={() => navigate('/Shopping-List')}>Shopping List</a>
           </section>
         </div>
       </main> 
