@@ -28,7 +28,6 @@ function User_Calendar() {
   const [planned, setPlanned] = useState<PlannedRecipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [dateToTry, setDateToTry] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchPlanned() {
@@ -49,12 +48,28 @@ function User_Calendar() {
     fetchPlanned();
   }, []);
 
-
   const handleDateChange = async (id: number, newDate: string) => {
-    if(!supabase) return;
+    if (!supabase) return;
 
-    
-  }
+    const value = newDate || null; 
+    const previous = planned;
+
+    setPlanned((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, date_to_try: value } : p))
+    );
+
+    const { data, error } = await supabase
+        .from('my_recipes')
+        .update({ date_to_try: value })
+        .eq('id', id)
+        .select('id');
+
+      if (error || !data || data.length === 0) {
+        setPlanned(previous); // roll back
+        setError(error?.message ?? 'Could not update the date.');
+      }
+  };
+
   return (
     <>
       <div className="header">
@@ -81,9 +96,15 @@ function User_Calendar() {
                 {p.recipe?.Link && (
                   <> · <a href={p.recipe.Link} target="_blank" rel="noreferrer">View recipe</a></>
                 )}
-                {p.date_to_try ? (
-                  <> · Planned for: {new Date(p.date_to_try).toLocaleDateString()}</>
-                ) : <input type="date" value={p.date_to_try || ''} onChange={(e) => {}} />}
+                {' · '}
+                <label>
+                  Planned for:{' '}
+                  <input
+                    type="date"
+                    value={p.date_to_try ?? ''}
+                    onChange={(e) => handleDateChange(p.id, e.target.value)}
+                  />
+                </label>
               </li>
             ))}
           </ul>
