@@ -17,6 +17,7 @@ function demoDraftScope(profileId: number) {
 }
 
 type RestoreState = 'loading' | 'ready' | 'error'
+const SHOW_QUESTIONNAIRE = true
 
 export function AppGate() {
   // The gate has four visible stages: restore the session, show sign-in when
@@ -164,8 +165,9 @@ export function AppGate() {
   if (!demoProfile) return <DemoSignin onContinue={beginDemo} onSignIn={handleSignIn} onSignUp={handleSignUp} />
 
   return <>
-    {!isQuestionnaireComplete && <><AccountUpgradePanel profile={demoProfile} onRequest={requestAccountUpgrade} onFinish={finishAccountUpgrade} /><Questionnaire key={demoProfile.id} draftScope={demoDraftScope(demoProfile.id)} onComplete={completeDemoQuestionnaire} /></>}
-    {isQuestionnaireComplete && <Outlet />}
+    {!isQuestionnaireComplete && <AccountUpgradePanel profile={demoProfile} onRequest={requestAccountUpgrade} onFinish={finishAccountUpgrade} />}
+    {SHOW_QUESTIONNAIRE && !isQuestionnaireComplete && <Questionnaire key={demoProfile.id} draftScope={demoDraftScope(demoProfile.id)} onComplete={completeDemoQuestionnaire} />}
+    <Outlet />
   </>
 }
 

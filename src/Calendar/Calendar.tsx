@@ -1,17 +1,75 @@
-import { useState } from 'react';
-import Calendar from 'react-calendar'
+import { useState, useEffect } from 'react';
+// import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase.ts';
 
-type ValuePiece = Date | null;
+// type ValuePiece = Date | null;
 
-type Value = ValuePiece | [ValuePiece, ValuePiece];
+// type Value = ValuePiece | [ValuePiece, ValuePiece];
+
+type PlannedRecipe = {
+  id: number;
+  recipe: {
+    id: number;
+    Name: string | null;
+    Link: string | null;
+    Cuisine: string | null;
+    Time: number | null;
+  } | null;
+  date_to_try: string | null;
+};
+
 function User_Calendar() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  //planned recipes for the user
-  const [value, onChange] = useState<Value>(new Date());
+  // const [value, onChange] = useState<Value>(new Date());
   
+  const [planned, setPlanned] = useState<PlannedRecipe[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchPlanned() {
+      if (!supabase) {
+        setError('Supabase is not configured.');
+        setLoading(false);
+        return;
+      }
+      const { data, error } = await supabase
+        .from('my_recipes')
+        .select('id, recipe(id, Name, Link, Cuisine, Time), date_to_try')
+        .eq('status', 'plan to try');
+
+      if (error) setError(error.message);
+      else setPlanned((data as unknown as PlannedRecipe[]) ?? []);
+      setLoading(false);
+    }
+    fetchPlanned();
+  }, []);
+
+  const handleDateChange = async (id: number, newDate: string) => {
+    if (!supabase) return;
+
+    const value = newDate || null; 
+    const previous = planned;
+
+    setPlanned((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, date_to_try: value } : p))
+    );
+
+    const { data, error } = await supabase
+        .from('my_recipes')
+        .update({ date_to_try: value })
+        .eq('id', id)
+        .select('id');
+
+      if (error || !data || data.length === 0) {
+        setPlanned(previous); // roll back
+        setError(error?.message ?? 'Could not update the date.');
+      }
+  };
+
   return (
     <>
       <div className="header">
@@ -19,7 +77,38 @@ function User_Calendar() {
         <button className="back-button" onClick={() => navigate('/Dashboard')}>Back to Dashboard</button>
       </div>
       <div>
-        <Calendar onChange={onChange} value={value} />
+    
+      </div>
+      <div className="planned-recipes">
+        <h2>Recipes you plan to try</h2>
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p>Error: {error}</p>
+        ) : planned.length === 0 ? (
+          <p>No planned recipes yet.</p>
+        ) : (
+          <ul>
+            {planned.map((p) => (
+              <li key={p.id}>
+                <strong>{p.recipe?.Name}</strong>
+                {p.recipe?.Time ? ` · ${p.recipe.Time} min` : ''}
+                {p.recipe?.Link && (
+                  <> · <a href={p.recipe.Link} target="_blank" rel="noreferrer">View recipe</a></>
+                )}
+                {' · '}
+                <label>
+                  Planned for:{' '}
+                  <input
+                    type="date"
+                    value={p.date_to_try ?? ''}
+                    onChange={(e) => handleDateChange(p.id, e.target.value)}
+                  />
+                </label>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </>
   )

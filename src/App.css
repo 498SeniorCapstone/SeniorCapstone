@@ -289,36 +289,38 @@ html{
   position:sticky;
   top:0;
   z-index:100;
-  height: var(--header-height);
-  display:column;
+  height: auto;
+  display:flex;
+  flex-direction: column;
+  align-items:center;
   justify-content:center;
   /* align-items: center; */
   gap:var(--space-2);
-  padding:0% var(--space-4);
+  padding:var(--space-2) var(--space-4);
   background: var(--color-header);
   color: var(--color-header-text);
 }
 
 .site-header{
-  position:sticky;
-  top:0;
-  z-index:100;
-  height: var(--header-height);
-  display:flex;
+  position:relative;
+  display: fex;
   align-items: center;
-  gap:var(--space-2);
-  padding:0% var(--space-4);
-  background: var(--color-header);
-  color: var(--color-header-text);
-  justify-content:center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
 
 }
 
 .site-header h1{
-  margin-right:auto;
+  margin:0;
   font-size: 1.4rem;
 }
 
+.header-actions{
+  display:flex;
+  gap:var(--space-2);
+}
+/*
 .site-header a{
   padding:var(--space-2) var(--space-3);
   border-radius:999px;
@@ -331,5 +333,47 @@ html{
 .site-header a:hover{
   background: rgba(255,255,255, 0.12);
 }
+*/
+.recipe-categories {
+  display: flex;            /* Aligns items side-by-side */
+  flex-direction: row;      /* Ensures they go left-to-right */
+  justify-content: space-between; /* Adds spacing between columns */
+  gap: 20px;                /* Controls the exact gap size between columns */
+}
 
+.category-item {
+  flex: 1;                  /* Makes all columns equal width */
+  text-align: center;       /* Centers the text inside each column */
+  cursor: pointer;          /* Gives a pointer hand icon on hover */
+}
+
+.button {
+  background-color:--color-header;
+  border: none;
+  color: --color-bg;
+  font-family: 'Inter', sans-serif;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.widget > a{
+  cursor: pointer;
+}
+
+.widget > a:hover{
+  text-decoration: underline;
+}
+
+.icon{
+  cursor: pointer;
+  background-color: transparent;
+}
+.icon img{
+  width: 40px;
+  height: 40px;
+}
 
