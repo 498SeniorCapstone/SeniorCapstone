@@ -76,7 +76,7 @@ function App() {
           </section>
 
           <section id="my-recipes" className="widget">
-            <a onClick={() => navigate('/My-Recipes')}>My Recipes</a>
+            <button>My Recipes</button>
             {/* <div className="recipe-categories">
               <div className="category-item">
                 <h3 onClick={() => navigate('/My-Recipes/want-to-try')}>Want to Try</h3>
@@ -95,14 +95,14 @@ function App() {
             */}
             <div className="recipe-categories">
               <div className="category-item">
-                <h3>Want to Try</h3>
+                <h3 onClick={() => navigate('/My-Recipes/want-to-try')}>Want to Try</h3>
                 <p>{wantToTryRecipes.length}</p>
               </div>
-              <div className="category-item">
+              <div onClick={() => navigate('/My-Recipes/plan-to-try')} className="category-item">
                 <h3>Plan to Try</h3>
                 <p>{plannedRecipes.length}</p>
               </div>
-              <div className="category-item">
+              <div onClick={() => navigate('/My-Recipes/tried')} className="category-item">
                 <h3>Tried</h3>
                 <p>{triedRecipes.length}</p>
               </div>

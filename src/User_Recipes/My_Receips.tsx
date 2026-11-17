@@ -20,6 +20,7 @@ type Recipe = {
 type UserRecipe = {
     recipe_id: number;
     status: string;
+    date_to_try: string | null;
 };
 
 function My_Recipes() {
@@ -50,7 +51,7 @@ function My_Recipes() {
         }
         const { data, error } = await supabase
             .from('my_recipes')
-            .select('recipe_id, status');
+            .select('recipe_id, status, date_to_try');
 
         if (error) {
             setError(error.message);
@@ -88,11 +89,11 @@ function My_Recipes() {
     str ? str.toLowerCase().replace(/-/g, ' ').trim() : '';
 
   const filteredUserRecipes = userRecipes.filter((ur) => {
-    if (!selectedCategory) return true; // Show all if no category selected
+    if (!selectedCategory) return true;
     return normalizeStatus(ur.status) === normalizeStatus(selectedCategory);
   });
+  const userRecipeById = new Map(userRecipes.map((ur) => [ur.recipe_id, ur]));
 
-  // Then get the full Recipe objects that match those userRecipe IDs
   const displayedRecipes = recipes.filter((recipe) =>
     filteredUserRecipes.some((ur) => ur.recipe_id === recipe.id)
   );
@@ -113,14 +114,27 @@ function My_Recipes() {
         {error && <p>Error: {error}</p>}
         {!loading && !error && (
           <div>
-            {displayedRecipes.map((recipe) => (
-              <div className = 'displayedRecipe' key={recipe.id}>
-                <h3>{recipe.Name}</h3>
-                <p>Cuisine: {recipe.Cuisine}</p>
-                <p>Time: {recipe.Time} minutes</p>
-                {recipe.Link && <a href={recipe.Link} target="_blank" rel="noopener noreferrer">View Recipe</a>}
-              </div>
-            ))}
+            {displayedRecipes.map((recipe) => {
+              const saved = userRecipeById.get(recipe.id);
+              return (
+                <div className="displayedRecipe" key={recipe.id}>
+                  <h3>{recipe.Name}</h3>
+                  <p>Cuisine: {recipe.Cuisine}</p>
+                  <p>Time: {recipe.Time} minutes</p>
+                  {saved?.status === 'plan to try' && (
+                    <p>
+                      Planned for:{' '}
+                      {saved.date_to_try ?? 'No date set'}
+                    </p>
+                  )}
+                  {recipe.Link && (
+                    <a href={recipe.Link} target="_blank" rel="noopener noreferrer">
+                      View Recipe
+                    </a>
+                  )}
+                </div>
+              );
+            })}
             {displayedRecipes.length === 0 && <p>No recipes found for this category.</p>}
           </div>
         )}

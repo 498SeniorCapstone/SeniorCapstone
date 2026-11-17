@@ -29,6 +29,8 @@ function Search_Engine() {
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
+    const [dateToTry, setDateToTry] = useState<string>('');
+
     // Fetch recipes from Supabase once, when the component mounts
     useEffect(() => {
         async function fetchRecipes() {
@@ -84,6 +86,7 @@ function Search_Engine() {
     const openSaveModal = (recipe: Recipe) => {
         setRecipeToSave(recipe);
         setStatus('want to try');
+        setDateToTry('');
         setSaveError(null);
     }
 
@@ -98,6 +101,7 @@ function Search_Engine() {
         const { error } = await supabase.rpc('save_recipe', {
             p_recipe_id: recipeToSave.id,
             p_status: status,
+            p_date_to_try: status === 'plan to try' && dateToTry ? dateToTry : null,
         });
 
         setSaving(false);
@@ -173,6 +177,17 @@ function Search_Engine() {
                                 <option key={s} value={s}>{s}</option>
                             ))}
                         </select>
+                        {status === 'plan to try' && (
+                            <>
+                                <label htmlFor="date-to-try">Date to try</label>
+                                <input
+                                    id="date-to-try"
+                                    type="date"
+                                    value={dateToTry}
+                                    onChange={(e) => setDateToTry(e.target.value)}
+                                />
+                            </>
+                        )}
 
                         {saveError && <p className="modal-error">{saveError}</p>}
 
