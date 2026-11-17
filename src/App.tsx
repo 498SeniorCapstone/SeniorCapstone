@@ -5,7 +5,6 @@ function App() {
 
   //navigation
   const navigate = useNavigate();
-
   return (
     <div className="Dashboard">
       <div className="site-header-container">
@@ -41,6 +40,7 @@ function App() {
             <h2 onClick={() => navigate('/Shopping-List')}>Shopping List</h2>
           </section>
         </div>
+        <button aria-label="Help" onClick={() => navigate('/Help')}>Help Page</button>
       </main> 
       
 
