@@ -113,6 +113,7 @@ function App() {
             <a onClick={() => navigate('/Shopping-List')}>Shopping List</a>
           </section>
         </div>
+        <button aria-label="Help" onClick={() => navigate('/Help')}>Help Page</button>
       </main> 
     </div>
   )
