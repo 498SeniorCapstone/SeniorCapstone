@@ -13,7 +13,22 @@ type RecipeRow = {
   'Meal Type': string | null;
   'Diet type': string[] | null;
   Time: number | null;
+  Nutrition: number[] | null;
 };
+
+
+export const NUTRITION_FIELDS: ({ label: string; unit: string } | null)[] = [
+  { label: 'Calories', unit: 'kcal' },  // 0
+  { label: 'Carbs', unit: 'g' },        // 1
+  { label: 'Protein', unit: 'g' },      // 2
+  { label: 'Fiber', unit: 'g' },        // 3
+  { label: 'Fat', unit: 'g' },          // 4
+  { label: 'Vitamin C', unit: 'mg' },   // 5
+  { label: 'Iron', unit: 'mg' },        // 6
+  { label: 'Sodium', unit: 'mg' },      // 7
+];
+
+export type NutrientAverage = { label: string; unit: string; avg: number };
 
 /** Every stat here is calculated only from recipes the user has marked "tried". */
 export type UserStats = {
@@ -26,6 +41,8 @@ export type UserStats = {
   topMealType: string | null;   // most-cooked meal type
   topDiet: string | null;       // most common diet type among tried recipes
   cuisineBreakdown: { name: string; count: number }[]; // tried recipes per cuisine, most first
+  nutritionAverages: NutrientAverage[]; // average per tried recipe, for each NUTRITION_FIELDS entry with data
+  topProteinRecipe: { name: string; grams: number } | null; // highest-protein tried recipe
 };
 
 export const QUICK_MEAL_MINUTES = 15;
@@ -61,6 +78,30 @@ export function computeStats(userRecipes: UserRecipeRow[], recipes: RecipeRow[])
   const minutesCooked = times.reduce((sum, t) => sum + t, 0);
   const cuisineBreakdown = countValues(triedRecipes.map((r) => r.Cuisine));
 
+  // Average each nutrient across tried recipes that have a number in that position.
+  const nutrientAt = (r: RecipeRow, i: number) => {
+    const v = r.Nutrition?.[i];
+    return typeof v === 'number' && Number.isFinite(v) ? v : null;
+  };
+  const nutritionAverages: NutrientAverage[] = NUTRITION_FIELDS.flatMap((field, i) => {
+    if (!field) return [];
+    const values = triedRecipes.map((r) => nutrientAt(r, i)).filter((v): v is number => v !== null);
+    if (values.length === 0) return [];
+    const avg = Math.round(values.reduce((sum, v) => sum + v, 0) / values.length);
+    return [{ ...field, avg }];
+  });
+
+  const proteinIndex = NUTRITION_FIELDS.findIndex((f) => f?.label.toLowerCase() === 'protein');
+  let topProteinRecipe: UserStats['topProteinRecipe'] = null;
+  if (proteinIndex >= 0) {
+    for (const r of triedRecipes) {
+      const grams = nutrientAt(r, proteinIndex);
+      if (grams !== null && r.Name && (!topProteinRecipe || grams > topProteinRecipe.grams)) {
+        topProteinRecipe = { name: r.Name, grams: Math.round(grams) };
+      }
+    }
+  }
+
   return {
     tried: triedRows.length,
     minutesCooked,
@@ -71,6 +112,8 @@ export function computeStats(userRecipes: UserRecipeRow[], recipes: RecipeRow[])
     topMealType: mostCommon(triedRecipes.map((r) => r['Meal Type'])),
     topDiet: mostCommon(triedRecipes.flatMap((r) => r['Diet type'] ?? [])),
     cuisineBreakdown,
+    nutritionAverages,
+    topProteinRecipe,
   };
 }
 
@@ -113,7 +156,7 @@ export function useUserStats() {
       if (triedIds.length > 0) {
         const { data, error } = await supabase
           .from('recipe')
-          .select('id, Name, Cuisine, "Meal Type", "Diet type", Time')
+          .select('id, Name, Cuisine, "Meal Type", "Diet type", Time, Nutrition')
           .in('id', triedIds);
         if (cancelled) return;
         if (error) {
