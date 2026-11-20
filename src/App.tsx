@@ -2,6 +2,9 @@ import './App.css'
 import { useState, useEffect } from "react";
 import {  useNavigate } from "react-router-dom";
 import { supabase } from './lib/supabase.ts';
+import notificationsIcon from "./assets/Apptrition_Notification_Button.png";
+import settingsIcon from "./assets/Apptrition_Settings_Button.png";
+
 
 
 type UserRecipe = {
@@ -48,13 +51,14 @@ function App() {
        {loading && <p>Loading...</p>}
         {error && <p>Error: {error}</p>}
       <header className="site-header-container">
+        <div />
         <h1 className="site-name">Apptrition</h1>
         <nav className="header-actions">
             <button className="icon"aria-label="Notifications" onClick={() => navigate('/Notifications')}>
-              <img src="src\assets\Apptrition_Notification_Button.png" alt="Notifications" />
+              <img src={notificationsIcon} alt="Notifications" />
             </button>
             <button className="icon" aria-label="Settings" onClick={() => navigate('/Settings')}>
-              <img src="src\assets\Apptrition_Settings_Button.png" alt="Settings" />
+              <img src={settingsIcon} alt="Settings" />
             </button>
             <button className="icon" aria-label="Profile" onClick={() => navigate('/User-Profile')}>
               {/*<img src="src\assets\Apptrition_Profile.png" alt="Profile" />*/}
@@ -66,17 +70,17 @@ function App() {
         <button onClick={() => navigate('/Search')}>Discover Recipes!</button>
         <div className="widget-grid" id="widget-grid">
           <section id="stats" className="widget">
-            <a onClick={() => navigate('/Stats')}>User Stats</a>
+            <h2 onClick={() => navigate('/Stats')}>User Stats</h2>
           </section>
 
           <section id="calendar" className="widget">
-            <a onClick={() => navigate('/Calendar')}>Calendar</a>
+            <h2 onClick={() => navigate('/Calendar')}>Calendar</h2>
              <h3>Recipes for this Week:</h3>
 
           </section>
 
           <section id="my-recipes" className="widget">
-            <button>My Recipes</button>
+            <h2 onClick={() => navigate('/My-Recipes')}>My Recipes</h2>
             {/* <div className="recipe-categories">
               <div className="category-item">
                 <h3 onClick={() => navigate('/My-Recipes/want-to-try')}>Want to Try</h3>
@@ -110,7 +114,7 @@ function App() {
           </section>
 
           <section id="shopping-list" className="widget">
-            <a onClick={() => navigate('/Shopping-List')}>Shopping List</a>
+            <h2 onClick={() => navigate('/Shopping-List')}>Shopping List</h2>
           </section>
         </div>
         <button aria-label="Help" onClick={() => navigate('/Help')}>Help Page</button>
