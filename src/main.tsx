@@ -15,6 +15,7 @@ import Discover from './Discover/Discover.tsx';
 import Shopping_List from './Shopping_List/Shopping_List.tsx';
 import My_Recipes from './User_Recipes/My_Receips.tsx';
 import Search_Engine from './Search_Engine.tsx';
+import Help from './Help/Help.tsx';
 
 
 createRoot(document.getElementById('root')!).render(
@@ -37,6 +38,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/My-Recipes/:category" element={<My_Recipes />} />
    
           <Route path="/Search" element={<Search_Engine />} />
+          <Route path="/Help" element={<Help />} />
         </Route>
       </Routes>
 
