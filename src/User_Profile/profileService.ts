@@ -1,7 +1,7 @@
 import { supabase } from '../lib/supabase'
 import { formatSupabaseError } from '../lib/supabaseError'
 
-export interface UserStats {
+export interface UserProfile {
   age: number | null
   goals: string[]
   dietaryNeeds: string[]
@@ -10,12 +10,12 @@ export interface UserStats {
   questionnaireCompleted: boolean
 }
 
-export async function getUserStats(): Promise<UserStats> {
+export async function getUserProfile(): Promise<UserProfile> {
   if (!supabase) throw new Error('Supabase is not configured.')
 
   const { data: auth, error: authError } = await supabase.auth.getUser()
   if (authError) throw formatSupabaseError(authError, 'Could not load your account.')
-  if (!auth.user) throw new Error('Please log in to see your stats.')
+  if (!auth.user) throw new Error('Please log in to see your profile.')
 
   const { data, error } = await supabase
     .from('users')
@@ -23,7 +23,7 @@ export async function getUserStats(): Promise<UserStats> {
     .eq('auth_user_id', auth.user.id)
     .maybeSingle()
 
-  if (error) throw formatSupabaseError(error, 'Could not load your stats.')
+  if (error) throw formatSupabaseError(error, 'Could not load your profile.')
   if (!data) throw new Error('Your account is not linked to a profile yet.')
 
   // primary_goal holds the first goal; secondary_goal holds the rest, joined with ", "

@@ -6,7 +6,8 @@ import App from './App.tsx'
 // moving route ownership out of this application entry point.
 import { AppGate } from './signin'
 import {HashRouter, Route, Routes} from "react-router-dom";
-import User_Info from "./User_Info/User_Info.tsx";
+// import User_Info from "./User_Info/User_Info.tsx"; // replaced by User_Profile below
+import UserProfile from './User_Profile/Profile.tsx';
 import Notifications from './Notifications/Notifications.tsx';
 import Settings from './Settings/Settings.tsx';
 import Stats from './User_Stats/Stats.tsx';
@@ -27,7 +28,7 @@ createRoot(document.getElementById('root')!).render(
         <Route element={<AppGate />}>
           <Route path="/" element={<App />} />
           <Route path="/Dashboard" element={<App />} />
-          <Route path="/User-Profile" element={<User_Info />} />
+          <Route path="/User-Profile" element={<UserProfile />} />
           <Route path="/Notifications" element={<Notifications />} />
           <Route path="/Settings" element={<Settings />} />
           <Route path="/Stats" element={<Stats />} />
@@ -36,7 +37,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/Shopping-List" element={<Shopping_List />} />
           <Route path="/My-Recipes" element={<My_Recipes />} />
           <Route path="/My-Recipes/:category" element={<My_Recipes />} />
-   
+
           <Route path="/Search" element={<Search_Engine />} />
           <Route path="/Help" element={<Help />} />
         </Route>
